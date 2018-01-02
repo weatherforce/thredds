@@ -1,14 +1,22 @@
 package ucar.nc2;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.DataType;
 import ucar.nc2.constants.CDM;
 import ucar.unidata.util.test.TestDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 public class TestWriteString {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
 
   String variableName = "dataVar";
   String units = "units";
@@ -74,9 +82,7 @@ public class TestWriteString {
   @Test
   public void testWrite() throws IOException {
     TestWriteString test = new TestWriteString();
-    File tempFile = File.createTempFile("temp", "nc", new File(TestDir.temporaryLocalDataDir));
+    File tempFile = tempFolder.newFile();
     test.createTimeLatLonDataCube(tempFile.getPath(), new double[] {1,2}, new double[] {10,20,30,40});
   }
-
-
 }

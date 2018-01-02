@@ -5,6 +5,8 @@ import com.google.common.base.Predicates
 import org.jdom2.Element
 import org.jdom2.Namespace
 import org.jdom2.output.Format
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import spock.lang.Shared
 import spock.lang.Specification
 import ucar.ma2.Array
@@ -17,6 +19,8 @@ import ucar.nc2.dataset.NetcdfDataset
  * @since 2015/08/05
  */
 class NcMLWriterSpec extends Specification {
+    private static final Logger logger = LoggerFactory.getLogger(NcMLWriterSpec)
+    
     @Shared
     NetcdfFile ncFile
 

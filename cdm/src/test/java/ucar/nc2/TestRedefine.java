@@ -36,20 +36,25 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.ArrayDouble;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.constants.CDM;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 public class TestRedefine {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Test
   public void testRedefine() throws IOException, InvalidRangeException {
-    String filename = tempFolder.newFile("testRedefine.nc").getAbsolutePath();
+    String filename = tempFolder.newFile().getAbsolutePath();
 
     try (NetcdfFileWriter ncWriter = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf3, filename)) {
       ncWriter.addGlobalAttribute("Conventions", "globulate");
@@ -160,7 +165,7 @@ public class TestRedefine {
 
   @Test
   public void testRewriteHeader3() throws IOException, InvalidRangeException {
-    String filename = tempFolder.newFile("testRedefine2.nc").getAbsolutePath();
+    String filename = tempFolder.newFile().getAbsolutePath();
 
     try (NetcdfFileWriter file = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf3, filename)) {
       file.addGlobalAttribute("att8", "1234567890");
@@ -180,7 +185,7 @@ public class TestRedefine {
 
   @Test
   public void testRedefineClose() throws IOException {
-    String filename = tempFolder.newFile("testRedefine.nc").getAbsolutePath();
+    String filename = tempFolder.newFile().getAbsolutePath();
 
     // Create a new file
     try (NetcdfFileWriter file = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf3, filename)) {

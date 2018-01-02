@@ -23,7 +23,7 @@ dependencies {
     testCompile project(":httpservices")
     testCompile project(":tdcommon")
     testCompile(project(":tds")) {
-        exclude module: "log4j-slf4j-impl"  // We don't want TDS's logger binding.
+        exclude group: "org.apache.logging.log4j"  // We don't want TDS's log4j cruft.
     }
 
     testRuntime project(":clcommon")
@@ -44,13 +44,11 @@ dependencies {
     testCompile libraries["xmlunit-core"]  // For comparing catalog XML.
 
     testRuntime libraries["jaxen"]
+    testRuntime libraries["logback-classic"]
 
     // These are for Spock.
     testCompile libraries["groovy-all"]
     testCompile libraries["spock-core"]
-
-    // Unlike the other subprojects, we do not need to add an SLF4J binding to testRuntime;
-    // we're overlaying tds (see below), so we're already getting the binding that it declares.
 }
 
 // Gretty will start the webapp before this task and shut it down afterward.
@@ -88,7 +86,7 @@ sourceSets {
         groovy.srcDir file("src/$taskName/groovy")
         resources.srcDir file("src/$taskName/resources")
 
-        // Need 'sourceSets.test.output' because we use TestWithLocalServer in our test.
+        // Need 'sourceSets.test.output' because we use TestOnLocalServer in our test.
         compileClasspath += sourceSets.test.output + configurations.testCompile
         runtimeClasspath += output + sourceSets.test.output + configurations.testRuntime
     }

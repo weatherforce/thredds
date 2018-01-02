@@ -32,15 +32,21 @@
  */
 package thredds.server.catalogservice;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.validation.BindingResult;
 import ucar.unidata.util.test.TestDir;
+
+import java.lang.invoke.MethodHandles;
 
 /**
  * _defunct for now
  */
 public class TestRemoteCatalogRequest
 {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   private String parameterNameCatalog = "catalog";
   private String parameterNameCommand = "command";
   private String parameterNameDatasetId = "dataset";
@@ -52,7 +58,7 @@ public class TestRemoteCatalogRequest
   private String bindResultMsg;
   private RemoteCatalogRequest rcr;
 
-  private String catUriString = "http://"+ TestDir.threddsTestServer+"/thredds/catalog.xml";
+  private String catUriString = "http://localhost:8081/thredds/catalog.xml";  // May need to move class to :it.
   private String cmdShow = "show";
   private String cmdSubset = "subset";
   private String cmdValidate = "validate";

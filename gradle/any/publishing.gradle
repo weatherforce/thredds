@@ -1,4 +1,4 @@
-import edu.ucar.build.PublishingUtil
+import edu.ucar.build.publishing.PublishingUtil
 
 apply plugin: 'maven-publish'
 
@@ -12,14 +12,14 @@ publishing {
         if (version.endsWith('SNAPSHOT')) {
             maven {
                 name = 'snapshots'
-                url = 'https://artifacts.unidata.ucar.edu/content/repositories/unidata-snapshots/'
-                // Set credentials in root/coverage.gradle.
+                url = 'https://artifacts.unidata.ucar.edu/repository/unidata-snapshots/'
+                // Set credentials in root/publishing.gradle.
             }
         } else {
             maven {
                 name = 'releases'
-                url = 'https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/'
-                // Set credentials in root/coverage.gradle.
+                url = 'https://artifacts.unidata.ucar.edu/repository/unidata-releases/'
+                // Set credentials in root/publishing.gradle.
             }
         }
     }

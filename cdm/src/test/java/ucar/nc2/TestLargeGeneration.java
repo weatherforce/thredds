@@ -1,8 +1,12 @@
 package ucar.nc2;
 
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.ArrayFloat;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
@@ -12,6 +16,7 @@ import ucar.unidata.util.test.category.NotTravis;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 /*
 On Travis, this class was causing:
@@ -24,6 +29,9 @@ Travis where we don't want to run this.
  */
 @Category(NotTravis.class)
 public class TestLargeGeneration {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
 
   String latVarName = "lat";
   String lonVarName = "lon";
@@ -45,7 +53,7 @@ public class TestLargeGeneration {
   @Test
   @Ignore("takes too long")
   public void generateLargeFile() throws IOException, InvalidRangeException {
-    File tempFile = File.createTempFile("tmp", "nc", new File(TestDir.temporaryLocalDataDir));
+    File tempFile = tempFolder.newFile();
     long startAll = System.nanoTime();
 
     try (NetcdfFileWriter writer = createLatLonTimeDataCube(tempFile.getPath())) {

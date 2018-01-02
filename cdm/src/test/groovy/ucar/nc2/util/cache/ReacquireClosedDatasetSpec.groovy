@@ -1,5 +1,7 @@
 package ucar.nc2.util.cache
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import spock.lang.Specification
 import ucar.nc2.dataset.DatasetUrl
 import ucar.nc2.dataset.NetcdfDataset
@@ -12,6 +14,8 @@ import ucar.unidata.util.test.TestDir
  * @since 2016-01-02
  */
 class ReacquireClosedDatasetSpec extends Specification {
+    private static final Logger logger = LoggerFactory.getLogger(ReacquireClosedDatasetSpec)
+    
     def setupSpec() {
         // All datasets, once opened, will be added to this cache. Config values copied from CdmInit.
         NetcdfDataset.initNetcdfFileCache(100, 150, 12 * 60);

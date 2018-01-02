@@ -35,6 +35,8 @@ package ucar.nc2.ft.fmrc;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import thredds.featurecollection.FeatureCollectionConfig;
 import thredds.featurecollection.FeatureCollectionType;
 import ucar.nc2.NCdumpW;
@@ -43,10 +45,11 @@ import ucar.nc2.dt.GridCoordSystem;
 import ucar.nc2.dt.GridDatatype;
 import ucar.nc2.time.CalendarDate;
 import ucar.nc2.time.CalendarDateUnit;
-import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 import ucar.unidata.util.test.TestDir;
+import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.Formatter;
 
 /**
@@ -57,6 +60,8 @@ import java.util.Formatter;
  */
 @Category(NeedsCdmUnitTest.class)
 public class TestFmrcOffsetsGreaterEqual {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   /*
       <featureCollection name="espresso_2013_da_history_fmrc_with_Offset_in_filename" featureType="FMRC"
                        harvest="true" path="roms/espresso/2013_da/fmrc/his/Offset">
@@ -121,9 +126,9 @@ original data:
       GridDatatype grid = gridDs.findGridByShortName("salt");
       GridCoordSystem gcs = grid.getCoordinateSystem();
       CoordinateAxis1D timeAxis = gcs.getTimeAxis1D();
-      System.out.printf("timeAxis = %s %s%n", NCdumpW.toString(timeAxis.read()), timeAxis.getUnitsString());
+      logger.debug("timeAxis = {} {}", NCdumpW.toString(timeAxis.read()), timeAxis.getUnitsString());
       CoordinateAxis1D runAxis = gcs.getRunTimeAxis();
-      System.out.printf("runAxis = %s %s%n", NCdumpW.toString( runAxis.read()), runAxis.getUnitsString());
+      logger.debug("runAxis = {} {}", NCdumpW.toString( runAxis.read()), runAxis.getUnitsString());
 
       CalendarDate expected = CalendarDate.parseISOformat(null, "2013-05-05T00:00:00");
       CalendarDateUnit cdu = CalendarDateUnit.of(null, timeAxis.getUnitsString());

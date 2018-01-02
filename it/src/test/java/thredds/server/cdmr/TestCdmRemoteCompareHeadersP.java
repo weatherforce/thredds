@@ -7,14 +7,15 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import thredds.TestWithLocalServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thredds.TestOnLocalServer;
 import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import ucar.nc2.constants._Coordinate;
 import ucar.nc2.dataset.NetcdfDataset;
 import ucar.nc2.stream.CdmRemote;
-import ucar.nc2.stream.NcStreamWriter;
 import ucar.nc2.util.CompareNetcdf2;
 import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 import ucar.unidata.util.test.TestDir;
@@ -22,8 +23,8 @@ import ucar.unidata.util.StringUtil2;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
@@ -31,6 +32,8 @@ import java.util.List;
 @RunWith(Parameterized.class)
 @Category(NeedsCdmUnitTest.class)
 public class TestCdmRemoteCompareHeadersP {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   static String contentRoot = TestDir.cdmUnitTestDir + "formats";
   static String urlPath = "cdmremote/scanCdmUnitTests/formats";
 
@@ -101,7 +104,7 @@ public class TestCdmRemoteCompareHeadersP {
   @Test
   public void doOne() throws IOException {
     String name = StringUtil2.substitute(filename.substring(contentRoot.length()), "\\", "/");
-    String remote = TestWithLocalServer.withPath(urlPath + name);
+    String remote = TestOnLocalServer.withHttpPath(urlPath + name);
     total++;
     success += compareDatasets(filename, remote, false);
   }

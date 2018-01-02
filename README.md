@@ -1,7 +1,7 @@
 ![THREDDS icon](http://www.unidata.ucar.edu/images/logos/thredds_netcdf-75x75.png)
 [![Travis Build Status](https://secure.travis-ci.org/Unidata/thredds.svg?branch=master)](http://travis-ci.org/Unidata/thredds)
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/388/badge.svg)](https://scan.coverity.com/projects/388)
-
+[![SonarCloud Gate](https://sonarcloud.io/api/badges/gate?key=thredds)](https://sonarcloud.io/dashboard?id=thredds)
+[![Coverage Status](https://coveralls.io/repos/github/Unidata/thredds/badge.svg?branch=origin%2F5.0.0)](https://coveralls.io/github/Unidata/thredds?branch=origin%2F5.0.0)
 # Unidata's THREDDS Project
 
 The THREDDS project is developing middleware to bridge the gap between data
@@ -19,25 +19,15 @@ XML encodings:
 * the THREDDS Data Server (TDS); and
 * the THREDDS Catalog specification.
 
-Source code for each of these is available from GitHub at
-
-* https://github.com/Unidata/thredds
+More details on each of these can be found below.
 
 The latest released and snapshot software artifacts (.jar and .war files e.g.)
 are available from Unidata's Maven repositories
 
-* https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/
-* https://artifacts.unidata.ucar.edu/content/repositories/unidata-snapshots/
+* https://artifacts.unidata.ucar.edu/#browse/browse/components:unidata-releases
+* https://artifacts.unidata.ucar.edu/#browse/browse/components:unidata-snapshots
 
 To build the software yourself, follow [this tutorial](docs/website/netcdf-java/tutorial/SourceCodeBuild.adoc).
-
-Copyright and licensing information can be found here
-
-* http://www.unidata.ucar.edu/software/netcdf/copyright.html
-
-as well as in the LICENSE.txt file accompanying the software.
-
-More details on each of these can be found below.
 
 ## netCDF-Java/CDM
 
@@ -131,3 +121,14 @@ data consumers find out what data is available from data providers.
 THREDDS Catalog documentation (including the specification) is available at
 
 * http://www.unidata.ucar.edu/software/thredds/current/tds/catalog/
+
+## Licensing
+
+Copyright and licensing information can be found [here](http://www.unidata.ucar.edu/software/netcdf/copyright.html),
+as well as in the `LICENSE.txt` file accompanying the software.
+
+Furthermore, this project includes code from third-party open-source software components:
+* [Gretty](https://github.com/akhikhl/gretty): for details, see `buildSrc/README.md`
+* [ERDDAP](https://coastwatch.pfeg.noaa.gov/erddap/index.html): for details, see `waterml/README.md`
+
+Each of these software components have their own license. Please see `docs/licenses/third-party/`.

@@ -34,22 +34,26 @@ package thredds.tds;
 
 import junit.framework.*;
 
-import thredds.TestWithLocalServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thredds.TestOnLocalServer;
 import ucar.nc2.util.IO;
 
 import java.io.IOException;
 import java.io.File;
+import java.lang.invoke.MethodHandles;
 
 public class TestTdsWxs extends TestCase {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public TestTdsWxs( String name) {
     super(name);
   }
 
   public void testWcs() throws IOException {
-    showGetCapabilities(TestWithLocalServer.server+"wcs/localContent/SUPER-NATIONAL_1km_CTP_20140105_2300.gini");
-    showDescribeCoverage(TestWithLocalServer.server+"wcs/localContent/SUPER-NATIONAL_1km_CTP_20140105_2300.gini", "CTP");
-    showGetCoverage(TestWithLocalServer.server+"wcs/localContent/SUPER-NATIONAL_1km_CTP_20140105_2300.gini", "CTP",
+    showGetCapabilities(TestOnLocalServer.withHttpPath("wcs/localContent/SUPER-NATIONAL_1km_CTP_20140105_2300.gini"));
+    showDescribeCoverage(TestOnLocalServer.withHttpPath("wcs/localContent/SUPER-NATIONAL_1km_CTP_20140105_2300.gini"), "CTP");
+    showGetCoverage(TestOnLocalServer.withHttpPath("wcs/localContent/SUPER-NATIONAL_1km_CTP_20140105_2300.gini"), "CTP",
             "2014-01-05T23:00:00Z", null, null);
   }
 

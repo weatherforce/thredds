@@ -1,5 +1,7 @@
 package ucar.nc2.ncml
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import spock.lang.Specification
 import ucar.ma2.Array
 import ucar.nc2.Variable
@@ -13,6 +15,8 @@ import ucar.nc2.dataset.NetcdfDataset
  * @since 2015-12-29
  */
 class CacheAggregationsSpec extends Specification {
+    private static final Logger logger = LoggerFactory.getLogger(CacheAggregationsSpec)
+    
     def setupSpec() {
         // All datasets, once opened, will be added to this cache.
         // Config values copied from CdmInit.
@@ -113,7 +117,7 @@ class CacheAggregationsSpec extends Specification {
 
     def "fmrc"() {
         setup:
-        String filename = "file:./"+TestNcML.topDir + "fmrc/testAggFmrc.ncml";
+        String filename = "file:./"+TestNcML.topDir + "fmrc/testAggFmrcScan.ncml";
         def expecteds = [232.0, 232.4, 232.5]
         def actuals
 

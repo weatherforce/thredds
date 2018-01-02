@@ -1,5 +1,7 @@
 package thredds.crawlabledataset.s3
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import spock.lang.Specification
 
 /**
@@ -9,6 +11,8 @@ import spock.lang.Specification
  * @since 2015/08/26
  */
 class S3URISpec extends Specification {
+    private static final Logger logger = LoggerFactory.getLogger(S3URISpec)
+    
     def "constructor throws exception for invalid arguments"() {
         when: "no S3 prefix"
         new S3URI("/path/to/object")

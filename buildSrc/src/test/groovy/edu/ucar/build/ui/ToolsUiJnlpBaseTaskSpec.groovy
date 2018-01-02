@@ -6,6 +6,8 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.internal.PluginUnderTestMetadataReading
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.xmlunit.builder.DiffBuilder
 import org.xmlunit.builder.Input
 import org.xmlunit.diff.Diff
@@ -18,14 +20,16 @@ import spock.lang.Specification
  * @since 2017-04-05
  */
 class ToolsUiJnlpBaseTaskSpec extends Specification {
+    private static final Logger logger = LoggerFactory.getLogger(ToolsUiJnlpBaseTaskSpec)
+    
     @Rule TemporaryFolder tempFolder
     
     def "writer with optional properties"() {
         setup: "Identify control file for this test. It's located in src/test/resources/edu/ucar/build/ui/"
         String controlFileName = 'toolsUiJnlpBaseWithOptionals.jnlp'
         
-        and: "Create a temp file that'll be deleted at the end. It has same name as control file, but different path."
-        File tempFile = tempFolder.newFile(controlFileName)
+        and: "Create a temp file that'll be deleted at the end."
+        File tempFile = tempFolder.newFile()
         
         and: "create a writer without application argument"
         ToolsUiJnlpBaseTask.Writer writer = new ToolsUiJnlpBaseTask.Writer()
@@ -54,8 +58,8 @@ class ToolsUiJnlpBaseTaskSpec extends Specification {
         setup: "Identify control file for this test. It's located in src/test/resources/edu/ucar/build/ui/"
         String controlFileName = 'toolsUiJnlpBaseWithoutOptionals.jnlp'
     
-        and: "Create a temp file that'll be deleted at the end. It has same name as control file, but different path."
-        File tempFile = tempFolder.newFile(controlFileName)
+        and: "Create a temp file that'll be deleted at the end."
+        File tempFile = tempFolder.newFile()
     
         and: "create a writer with application argument"
         ToolsUiJnlpBaseTask.Writer writer = new ToolsUiJnlpBaseTask.Writer()
@@ -87,7 +91,7 @@ class ToolsUiJnlpBaseTaskSpec extends Specification {
     def "full Gradle build"() {
         setup: "variables"
         String taskName = 'toolsUiJnlpBase'
-        File outputFile = tempFolder.newFile('toolsUiJnlpBaseGradle.jnlp')
+        File outputFile = tempFolder.newFile()
         
         and: "declare initial content of build file"
         String buildFileContent = """

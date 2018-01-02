@@ -33,19 +33,25 @@
  */
 package ucar.util.prefs;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
 import java.util.prefs.*;
 import java.io.*;
 
 public class TestReadExtPrefs  {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   static {
       System.setProperty("java.util.prefs.PreferencesFactory", "ucar.util.prefs.PreferencesExtFactory");
   }
 
-  public static void main(String args[]) {
+  public static void main(String args[]) throws IOException {
     //System.getProperty("ucar.util.prefs.PreferencesExtFactory");
     TestReadExtPrefs pf = new TestReadExtPrefs();
     //pf.doit("work/extPrefs2.xml");
-    pf.doit(TestAllPrefs.dir+"testBeans.xml");
+    pf.doit(File.createTempFile("foo", "bar").getAbsolutePath());
   }
 
   void doit(String filename) {

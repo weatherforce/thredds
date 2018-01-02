@@ -33,16 +33,24 @@
  */
 package ucar.util.prefs.ui;
 
-import ucar.util.prefs.*;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.util.prefs.PreferencesExt;
 import ucar.util.prefs.XMLStore;
 
 import java.awt.event.*;
 import java.beans.*;
+import java.lang.invoke.MethodHandles;
 import java.util.*;
 import javax.swing.*;
 
 public class TestPanel {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
+
   //private Field.Text ef;
   //private boolean enabled = true;
   static {
@@ -54,7 +62,7 @@ public class TestPanel {
 
   public void setUp() {
     try {
-      xstore = XMLStore.createFromFile(TestAllPrefs.dir+"panel.xml", null);
+      xstore = XMLStore.createFromFile(tempFolder.newFile().getAbsolutePath(), null);
     } catch (java.io.IOException e) {}
     store = xstore.getPreferences();
   }
@@ -208,18 +216,4 @@ public class TestPanel {
     d.finish();
     d.setVisible(true);
   }
-
-
 }
-/* Change History:
-   $Log: TestPanel.java,v $
-   Revision 1.3  2004/08/26 17:55:19  caron
-   no message
-
-   Revision 1.2  2003/05/29 23:33:28  john
-   latest release
-
-   Revision 1.1.1.1  2002/12/20 16:40:27  john
-   start new cvs root: prefs
-
-*/

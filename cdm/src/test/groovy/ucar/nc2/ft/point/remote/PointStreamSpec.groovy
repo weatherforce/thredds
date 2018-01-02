@@ -1,6 +1,8 @@
 package ucar.nc2.ft.point.remote
 
 import org.apache.commons.io.FilenameUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import spock.lang.Specification
 import spock.lang.Unroll
 import ucar.nc2.constants.FeatureType
@@ -16,6 +18,8 @@ import ucar.unidata.util.test.TestDir
  * @since 2015/09/21
  */
 class PointStreamSpec extends Specification {
+    private static final Logger logger = LoggerFactory.getLogger(PointStreamSpec)
+    
     public static final String cfDocDsgExamplesDir = TestDir.cdmLocalTestDataDir + "cfDocDsgExamples/";
     public static final String pointDir = TestDir.cdmLocalTestDataDir + "point/";
 

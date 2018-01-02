@@ -3,6 +3,8 @@ package ucar.nc2.jni.netcdf;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
@@ -16,6 +18,7 @@ import ucar.unidata.util.test.UnitTestCommon;
 import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 
 import java.io.*;
+import java.lang.invoke.MethodHandles;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +31,9 @@ import java.util.Map;
  * @since 7/27/12
  */
 public class TestNc4IospWriting {
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+    @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
 
     int countNotOK = 0;
 
@@ -45,7 +49,7 @@ public class TestNc4IospWriting {
   @Category(NeedsCdmUnitTest.class)
   public void unlimDim0() throws IOException {
     File fin = new File(TestDir.cdmUnitTestDir + "formats/netcdf3/longOffset.nc");
-    String datasetOut = tempDir + fin.getName();
+    String datasetOut = tempFolder.newFile().getAbsolutePath();
 
     copyFile(fin.getAbsolutePath(), datasetOut, NetcdfFileWriter.Version.netcdf3);
     copyFile(fin.getAbsolutePath(), datasetOut, NetcdfFileWriter.Version.netcdf4);
@@ -121,8 +125,7 @@ public class TestNc4IospWriting {
     private class MyAct implements TestDir.Act {
         public int doAct(String datasetIn) throws IOException
         {
-            File fin = new File(datasetIn);
-            String datasetOut = tempDir + fin.getName();
+            String datasetOut = tempFolder.newFile().getAbsolutePath();
 
             if(!copyFile(datasetIn, datasetOut, NetcdfFileWriter.Version.netcdf4))
                 countNotOK++;
@@ -139,9 +142,6 @@ public class TestNc4IospWriting {
             return true;
         }
     }
-
-
-    private String tempDir = TestDir.temporaryLocalDataDir; // "C:/temp/";
 
     private boolean copyFile(String datasetIn, String datasetOut, NetcdfFileWriter.Version version) throws IOException {
 
@@ -168,7 +168,6 @@ public class TestNc4IospWriting {
 
     /////////////////////////////////////////////////
 
-    // Demonstrates GitHub issue #191.
     @Test
     public void writeEnumType() throws IOException {
         // NetcdfFile's 0-arg constructor is protected, so must use NetcdfFileSubclass
@@ -211,15 +210,15 @@ public class TestNc4IospWriting {
             try (NetcdfFile ncFileOut = writer.write()) {
                 ncFileOut.setLocation("writeEnumType");
 
-                Writer out = new StringWriter();
-                NCdumpW.print(ncFile, out, WantValues.all, false, false, null, null);
-                out.close();
-                mem = out.toString();
+                Writer sw = new StringWriter();
+                NCdumpW.print(ncFile, sw, WantValues.all, false, false, null, null);
+                sw.close();
+                mem = sw.toString();
 
-                out = new StringWriter();
-                NCdumpW.print(ncFileOut, out, WantValues.all, false, false, null, null);
-                out.close();
-                disk = out.toString();
+                sw = new StringWriter();
+                NCdumpW.print(ncFileOut, sw, WantValues.all, false, false, null, null);
+                sw.close();
+                disk = sw.toString();
             }
             String diffs = UnitTestCommon.compare("TestNc4IospWriting.writeEnumType", mem, disk);
             Assert.assertTrue("Differences", diffs == null);
@@ -233,7 +232,7 @@ public class TestNc4IospWriting {
     // Demonstrates GitHub issue #301--badly writing subsetted arrays
     @Test
     public void writeSubset() throws IOException, InvalidRangeException {
-        String fname = tempFolder.newFile("writeSubset.nc").getAbsolutePath();
+        String fname = tempFolder.newFile().getAbsolutePath();
         try (NetcdfFileWriter ncFile = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf4, fname)) {
             // Create shared, unlimited Dimension
             ncFile.addDimension(null, "x", 5);
@@ -266,8 +265,9 @@ public class TestNc4IospWriting {
     }
 
     @Test
+    @Ignore("Broken with libnetcdf 4.5.0; waiting on https://github.com/Unidata/netcdf-c/issues/718")
     public void expandUnlimitedDimensions() throws IOException, InvalidRangeException {
-        File outFile = tempFolder.newFile("expandUnlimitedDimensions.nc4");
+        File outFile = tempFolder.newFile();
 
         try (NetcdfFileWriter writer = NetcdfFileWriter.createNew(
                 NetcdfFileWriter.Version.netcdf4, outFile.getAbsolutePath())) {

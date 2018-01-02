@@ -36,7 +36,9 @@ package thredds.server.fileserver;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import thredds.TestWithLocalServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thredds.TestOnLocalServer;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import ucar.nc2.dataset.NetcdfDataset;
@@ -44,6 +46,7 @@ import ucar.nc2.dt.grid.GridDataset;
 import ucar.unidata.io.http.HTTPRandomAccessFile;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -55,6 +58,7 @@ import java.util.Collection;
  */
 @RunWith(Parameterized.class)
 public class TestHttpOpen {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Parameterized.Parameters(name="{0}")
   public static Collection testUrls() {
@@ -69,7 +73,7 @@ public class TestHttpOpen {
 
   private final String url;
   public TestHttpOpen(String path) {
-      this.url = TestWithLocalServer.withPath(path);
+      this.url = TestOnLocalServer.withHttpPath(path);
   }
 
   // HTTP = 4300 HTTP2 = 5500 msec 20-25% slower

@@ -35,7 +35,9 @@ package thredds.tds;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import thredds.TestWithLocalServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thredds.TestOnLocalServer;
 import thredds.client.catalog.Catalog;
 import thredds.client.catalog.Dataset;
 import thredds.client.catalog.tools.DataFactory;
@@ -53,11 +55,12 @@ import ucar.nc2.util.Misc;
 import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.lang.invoke.MethodHandles;
 import java.util.Formatter;
 
 @Category(NeedsCdmUnitTest.class)
 public class TestTdsNcml {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Test
   public void testNcMLinDataset() throws IOException {
@@ -137,7 +140,7 @@ public class TestTdsNcml {
 
   @Test
   public void testAggExisting() throws IOException, InvalidRangeException {
-    String endpoint = TestWithLocalServer.withPath("dodsC/ExampleNcML/Agg.nc");
+    String endpoint = TestOnLocalServer.withHttpPath("dodsC/ExampleNcML/Agg.nc");
     System.out.printf("%s%n", endpoint);
 
     NetcdfFile ncfile = NetcdfDataset.openFile(endpoint, null);
@@ -152,7 +155,8 @@ public class TestTdsNcml {
 
     int count = 0;
     Array data = v.read();
-    NCdumpW.printArray(data, "time", new PrintWriter(System.out), null);
+    logger.debug(NCdumpW.toString(data, "time", null));
+
     while (data.hasNext()) {
       assert Misc.closeEnough(data.nextInt(), (count + 1) * 3);
       count++;
@@ -174,7 +178,7 @@ public class TestTdsNcml {
 
   @Test
   public void testAddMetadataToScan() throws IOException, InvalidRangeException {
-    String endpoint = TestWithLocalServer.withPath("cdmremote/testGridScan/GFS_CONUS_80km_20120229_1200.grib1");
+    String endpoint = TestOnLocalServer.withHttpPath("cdmremote/testGridScan/GFS_CONUS_80km_20120229_1200.grib1");
     System.out.printf("%s%n", endpoint);
 
     try (NetcdfFile ncd = NetcdfDataset.openFile(endpoint, null)) {

@@ -2,6 +2,8 @@ package ucar.nc2.iosp.grib;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.Array;
 import ucar.ma2.Index;
 import ucar.nc2.NCdumpW;
@@ -9,10 +11,11 @@ import ucar.nc2.dt.GridCoordSystem;
 import ucar.nc2.dt.grid.GeoGrid;
 import ucar.nc2.dt.grid.GridDataset;
 import ucar.nc2.util.Misc;
-import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 import ucar.unidata.util.test.TestDir;
+import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 /**
  * Describe
@@ -22,6 +25,7 @@ import java.io.IOException;
  */
 @Category(NeedsCdmUnitTest.class)
 public class TestScanMode {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Test
   // scanMode = 0
@@ -39,7 +43,7 @@ public class TestScanMode {
 
     // should be non NAN
     Array data = grid.readDataSlice(0, 0, 714, 1779);
-    NCdumpW.printArray(data);
+    logger.debug("{}", NCdumpW.toString(data));
 
     Index ima = data.getIndex();
     float val = data.getFloat(ima);
@@ -63,7 +67,7 @@ public class TestScanMode {
 
     // should be non NAN
     Array data = grid.readDataSlice(0, 0, result[1], result[0]);
-    NCdumpW.printArray(data);
+    logger.debug("{}", NCdumpW.toString(data));
 
     Index ima = data.getIndex();
     float val = data.getFloat(ima);

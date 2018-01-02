@@ -39,12 +39,13 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import thredds.TestWithLocalServer;
+import thredds.TestOnLocalServer;
 import ucar.httpservices.*;
 import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -57,16 +58,21 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 @Category(NeedsCdmUnitTest.class)
 public class TestRestrictDataset {
-    private static Logger logger = LoggerFactory.getLogger(TestRestrictDataset.class);
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Parameterized.Parameters(name="{0}")
   public static Collection<Object[]> getTestParameters() {
     return Arrays.asList(new Object[][]{
-            // These first 3 actually don't require cdmUnitTest/. Could be broken out into separate class that can
+            // These first 6 actually don't require cdmUnitTest/. Could be broken out into separate class that can
             // run on Travis.
+            // explicit services
             {"/dodsC/testRestrictedDataset/testData2.nc.dds"},
             {"/cdmremote/testRestrictedDataset/testData2.nc?req=header"},
             {"/fileServer/testRestrictedDataset/testData2.nc"},
+            // default services
+            {"/dodsC/testRestrictedDataset/testData.nc.dds"},
+            {"/cdmremote/testRestrictedDataset/testData.nc?req=header"},
+            {"/fileServer/testRestrictedDataset/testData.nc"},
          //   {"/wms/testRestrictedDataset/testData2.nc?service=WMS&version=1.3.0&request=GetCapabilities"},
 
             // restricted DatasetScan
@@ -90,7 +96,7 @@ public class TestRestrictDataset {
 
   @Test
   public void testFailNoAuth() {
-    String endpoint = TestWithLocalServer.withPath(path);
+    String endpoint = TestOnLocalServer.withHttpPath(path);
     logger.info(String.format("testRestriction req = '%s'", endpoint));
 
     try (HTTPSession session = HTTPFactory.newSession(endpoint)) {
@@ -109,7 +115,7 @@ public class TestRestrictDataset {
 
   @Test
   public void testFailBadUser() {
-    String endpoint = TestWithLocalServer.withPath(path);
+    String endpoint = TestOnLocalServer.withHttpPath(path);
     logger.info(String.format("testRestriction req = '%s'", endpoint));
 
     try (HTTPSession session = HTTPFactory.newSession(endpoint)) {
@@ -129,7 +135,7 @@ public class TestRestrictDataset {
 
   @Test
   public void testFailBadPassword() {
-    String endpoint = TestWithLocalServer.withPath(path);
+    String endpoint = TestOnLocalServer.withHttpPath(path);
     logger.info(String.format("testRestriction req = '%s'", endpoint));
 
     try (HTTPSession session = HTTPFactory.newSession(endpoint)) {
@@ -152,7 +158,7 @@ public class TestRestrictDataset {
 
   @Test
   public void testSuccess() {
-    String endpoint = TestWithLocalServer.withPath(path);
+    String endpoint = TestOnLocalServer.withHttpPath(path);
     logger.info(String.format("testRestriction req = '%s'", endpoint));
 
     try (HTTPSession session = HTTPFactory.newSession(endpoint)) {
@@ -174,7 +180,7 @@ public class TestRestrictDataset {
   // from 4.6
   @Test
   public void testRestriction() {
-    String endpoint = TestWithLocalServer.withPath(path);
+    String endpoint = TestOnLocalServer.withHttpPath(path);
     logger.info(String.format("testRestriction req = '%s'", endpoint));
     try {
       try (HTTPMethod method = HTTPFactory.Get(endpoint)) {

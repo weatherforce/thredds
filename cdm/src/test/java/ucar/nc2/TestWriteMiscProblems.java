@@ -36,6 +36,8 @@ package ucar.nc2;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.*;
 import ucar.nc2.dataset.DatasetUrl;
 import ucar.nc2.dataset.NetcdfDataset;
@@ -44,6 +46,7 @@ import ucar.unidata.util.test.TestDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,12 +57,14 @@ import java.util.List;
  * @since Jun 16, 2008
  */
 public class TestWriteMiscProblems {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Test
   public void testWriteBigString() throws IOException {
-    String filename = tempFolder.newFile("testWriteMisc.nc").getAbsolutePath();
+    String filename = tempFolder.newFile().getAbsolutePath();
     try (NetcdfFileWriter ncfile = NetcdfFileWriter.createNew(filename, false)) {
       int len = 120000;
       ArrayChar.D1 arrayCharD1 = new ArrayChar.D1(len);
@@ -84,7 +89,7 @@ public class TestWriteMiscProblems {
     final int DateStrLen_len = 19;
 
     /* enter define mode */
-    String filename = tempFolder.newFile("testCharMultidim.nc").getAbsolutePath();
+    String filename = tempFolder.newFile().getAbsolutePath();
     try (NetcdfFileWriter ncfile = NetcdfFileWriter.createNew(filename, true)) {
       /* define dimensions */
       Dimension Time_dim       = ncfile.addUnlimitedDimension("Time");
@@ -123,7 +128,7 @@ public class TestWriteMiscProblems {
   @Test
   public void testRemove() throws IOException, InvalidRangeException {
     String inName = TestDir.cdmLocalTestDataDir + "testWrite.nc";
-    String outName = tempFolder.newFile("testRemove.nc").getAbsolutePath();
+    String outName = tempFolder.newFile().getAbsolutePath();
 
     DatasetUrl durl = new DatasetUrl(null, inName);
     try (NetcdfDataset ncd = NetcdfDataset.acquireDataset(durl, true, null)) {
@@ -145,7 +150,7 @@ public class TestWriteMiscProblems {
   @Test
   public void testRedefine() throws IOException, InvalidRangeException {
     String org = TestDir.cdmLocalTestDataDir + "testWriteRecord.nc";
-    String path = tempFolder.newFile("testWriteRecordRedefine.nc").getAbsolutePath();
+    String path = tempFolder.newFile().getAbsolutePath();
     File orgFile = new File(org);
     File newFile = new File(path);
     if (newFile.exists()) newFile.delete();

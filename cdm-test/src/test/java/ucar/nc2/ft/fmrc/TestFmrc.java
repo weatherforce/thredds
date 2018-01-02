@@ -37,6 +37,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import thredds.featurecollection.FeatureCollectionConfig;
 import ucar.ma2.Array;
 import ucar.nc2.NCdumpW;
@@ -47,9 +49,10 @@ import ucar.nc2.dataset.CoordinateAxis1DTime;
 import ucar.nc2.dataset.NetcdfDataset;
 import ucar.nc2.dt.GridCoordSystem;
 import ucar.nc2.dt.GridDatatype;
-import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 import ucar.unidata.util.test.TestDir;
+import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Formatter;
@@ -62,6 +65,7 @@ import java.util.Formatter;
 @RunWith(Parameterized.class)
 @Category(NeedsCdmUnitTest.class)
 public class TestFmrc {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private static String datadir = TestDir.cdmUnitTestDir + "ft/fmrc/";
   private static boolean showDetails = true;
 
@@ -172,7 +176,7 @@ public class TestFmrc {
           if (axis.getShortName().startsWith("layer_between")) {
             CoordinateAxis1D axis1 = (CoordinateAxis1D) axis;
             Array data = axis.read();
-            NCdumpW.printArray(data);
+            logger.debug(NCdumpW.toString(data));
             Formatter f = new Formatter();
             f.format("%n bounds1=");
             showArray(f, axis1.getBound1());

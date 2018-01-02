@@ -33,9 +33,12 @@
 package thredds.client.catalog;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import thredds.client.catalog.tools.CatalogXmlWriter;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 /**
@@ -46,6 +49,7 @@ import java.util.List;
  * @since 1/16/2015
  */
 public class TestMetadataXLink {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /*
   <?xml version="1.0" encoding="UTF-8"?>
@@ -114,7 +118,7 @@ public class TestMetadataXLink {
 
   @Test
   public void testXLink() throws IOException {
-    Catalog cat = TestClientCatalog.open("catalogDev.xml");
+    Catalog cat = ClientCatalogUtil.open("catalogDev.xml");
     assert cat != null;
 
     CatalogXmlWriter writer = new CatalogXmlWriter();
@@ -179,7 +183,7 @@ public class TestMetadataXLink {
 
   @Test
   public void testNamespaces() throws IOException {
-    Catalog cat = TestClientCatalog.open("testMetadata.xml");
+    Catalog cat = ClientCatalogUtil.open("testMetadata.xml");
     assert cat != null;
 
     ThreddsMetadata.MetadataOther m = getMetadataByNamespace(cat, "solve", "somethingdifferent");

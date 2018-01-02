@@ -35,16 +35,19 @@ package ucar.nc2.iosp.hdf5;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NCdumpW;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import ucar.nc2.util.DebugFlagsImpl;
-import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 import ucar.unidata.util.test.TestDir;
+import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 /**
  * @author caron
@@ -52,6 +55,7 @@ import java.io.IOException;
  */
 @Category(NeedsCdmUnitTest.class)
 public class TestH5npoess {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @AfterClass
   static public void after() {
@@ -72,7 +76,7 @@ public class TestH5npoess {
     try (NetcdfFile ncfile = TestH5.openH5("npoess/ExampleFiles/AVAFO_NPP_d2003125_t10109_e101038_b9_c2005829155458_devl_Tst.h5")) {
       Variable dset = ncfile.findVariable("Data_Products/VIIRS-AF-EDR/VIIRS-AF-EDR_Gran_0");
       Array data = dset.read();
-      NCdumpW.printArray(data, "data", System.out, null);
+      logger.debug(NCdumpW.toString(data, "data", null));
     }
   }
 
@@ -91,7 +95,7 @@ public class TestH5npoess {
       Variable dset = ncfile.findVariable("Data_Products/ATMS-SCIENCE-RDR/ATMS-SCIENCE-RDR_Aggr");
       assert (null != dset);
       Array data = dset.read();
-      NCdumpW.printArray(data, dset.getFullName(), System.out, null);
+      logger.debug(NCdumpW.toString(data, dset.getFullName(), null));
     }
     H5header.setDebugFlags( new ucar.nc2.util.DebugFlagsImpl());
   }

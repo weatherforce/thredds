@@ -7,30 +7,34 @@ package thredds.server.reify;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thredds.TestOnLocalServer;
 import ucar.httpservices.HTTPFactory;
 import ucar.httpservices.HTTPMethod;
 import ucar.httpservices.HTTPUtil;
 
 import java.io.File;
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TestDownload extends TestReify
 {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     static protected final boolean DEBUG = false;
 
     //////////////////////////////////////////////////
     // Constants
 
-    static protected final String DEFAULTSERVER = "localhost:8081";
-    static protected final String DEFAULTDOWNURL = "http://" + DEFAULTSERVER + THREDDSPREFIX + DOWNPREFIX;
+    static protected final String DEFAULTDOWNURL = TestOnLocalServer.withHttpPath(DOWNPREFIX);
 
     //////////////////////////////////////////////////
     // Type Decls
 
     static class TestCase extends AbstractTestCase
     {
-        static public String server = DEFAULTSERVER;
         static String downloaddir = null;
 
         static public void setDownloadDir(String dir)
@@ -102,16 +106,14 @@ public class TestDownload extends TestReify
         public String
         makeURL()
         {
-            StringBuilder b = new StringBuilder();
-            b.append("http://");
-            b.append(server);
-            b.append(THREDDSPREFIX);
-            b.append(DOWNPREFIX);
-            b.append("/?");
+            StringBuilder pathBuilder = new StringBuilder();
+            pathBuilder.append(DOWNPREFIX);
+            pathBuilder.append("/?");
             String params = mapToString(this.params, true,
                     "request", "format", "target", "url", "testinfo");
-            b.append(params);
-            return b.toString();
+            pathBuilder.append(params);
+
+            return TestOnLocalServer.withHttpPath(pathBuilder.toString());
         }
     }
 

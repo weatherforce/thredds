@@ -35,7 +35,9 @@ package thredds.server.opendap;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import thredds.TestWithLocalServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thredds.TestOnLocalServer;
 import ucar.ma2.IndexIterator;
 import ucar.ma2.InvalidRangeException;
 import ucar.ma2.DataType;
@@ -49,17 +51,19 @@ import ucar.nc2.dt.grid.GridDataset;
 import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 /**
  * miscellaneous opendap tests
  */
 @Category(NeedsCdmUnitTest.class)
 public class TestOpendapMisc {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   // @Ignore("Fails because we dont have alias subst in ncml")
   @Test
   public void testAliasSubst() throws IOException {
-    String url = TestWithLocalServer.withPath("/dodsC/ExampleNcML/Modified.nc");
+    String url = TestOnLocalServer.withHttpPath("/dodsC/ExampleNcML/Modified.nc");
     try (NetcdfDataset dodsfile = NetcdfDataset.openDataset(url)) {
       System.out.printf("OK %s%n", dodsfile.getLocation());
     }
@@ -67,7 +71,7 @@ public class TestOpendapMisc {
 
   @Test
   public void testStrings() throws IOException, InvalidRangeException {
-    String url = TestWithLocalServer.withPath("/dodsC/scanLocal/testWrite.nc");
+    String url = TestOnLocalServer.withHttpPath("/dodsC/scanLocal/testWrite.nc");
     try (NetcdfDataset dodsfile = NetcdfDataset.openDataset(url)) {
       Variable v;
 
@@ -112,7 +116,7 @@ public class TestOpendapMisc {
 
   @Test
   public void testStridedSubsetSanityCheck() throws Exception {
-    String url = TestWithLocalServer.withPath("/dodsC/gribCollection/GFS_CONUS_80km/Best");
+    String url = TestOnLocalServer.withHttpPath("/dodsC/gribCollection/GFS_CONUS_80km/Best");
     try (GridDataset dataset = GridDataset.open(url)) {
       System.out.printf("%s%n", dataset.getLocation());
 
@@ -149,7 +153,7 @@ public class TestOpendapMisc {
 
   @Test
   public void testByteAttribute() throws IOException {
-    String filename = TestWithLocalServer.withPath("dodsC/scanCdmUnitTests/ft/stationProfile/PROFILER_wind_06min_20091030_2330.nc");
+    String filename = TestOnLocalServer.withHttpPath("dodsC/scanCdmUnitTests/ft/stationProfile/PROFILER_wind_06min_20091030_2330.nc");
     NetcdfDataset ncd = NetcdfDataset.openDataset(filename, true, null);
     assert ncd != null;
     VariableDS v = (VariableDS) ncd.findVariable("uvQualityCode");

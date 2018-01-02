@@ -8,6 +8,8 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.internal.PluginUnderTestMetadataReading
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.xmlunit.builder.DiffBuilder
 import org.xmlunit.builder.Input
 import org.xmlunit.diff.Diff
@@ -20,6 +22,8 @@ import spock.lang.Specification
  * @since 2017-04-05
  */
 class ToolsUiJnlpExtensionTaskSpec extends Specification {
+    private static final Logger logger = LoggerFactory.getLogger(ToolsUiJnlpExtensionTaskSpec)
+    
     private static Project rootProject
     
     def setupSpec() {
@@ -48,8 +52,8 @@ class ToolsUiJnlpExtensionTaskSpec extends Specification {
         setup: "Identify control file for this test. It's located in src/test/resources/edu/ucar/build/ui/"
         String controlFileName = 'toolsUiJnlpExtension.jnlp'
     
-        and: "Create a temp file that'll be deleted at the end. It has same name as control file, but different path."
-        File tempFile = tempFolder.newFile(controlFileName)
+        and: "Create a temp file that'll be deleted at the end."
+        File tempFile = tempFolder.newFile()
     
         and: "create a writer with the specified properties"
         ToolsUiJnlpExtensionTask.Writer writer = new ToolsUiJnlpExtensionTask.Writer()
@@ -84,7 +88,7 @@ class ToolsUiJnlpExtensionTaskSpec extends Specification {
     def "full Gradle build"() {
         setup: "variables"
         String taskName = 'toolsUiJnlpExtension'
-        File outputFile = tempFolder.newFile('testNetCDFtoolsExtraJars.jnlp')
+        File outputFile = tempFolder.newFile()
         
         and: "declare initial content of build file"
         String buildFileContent = """

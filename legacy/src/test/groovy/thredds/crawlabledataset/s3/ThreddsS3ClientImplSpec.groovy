@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.ObjectListing
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.S3ObjectSummary
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import spock.lang.Specification
 
 /**
@@ -18,6 +20,8 @@ import spock.lang.Specification
  * @since 2015/08/26
  */
 class ThreddsS3ClientImplSpec extends Specification {
+    private static final Logger logger = LoggerFactory.getLogger(ThreddsS3ClientImplSpec)
+    
     ObjectListing emptyMockObjectListing
     ObjectListing nonEmptyMockObjectListing
     AmazonServiceException amazonServiceException

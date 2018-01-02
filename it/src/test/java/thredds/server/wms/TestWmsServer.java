@@ -44,7 +44,9 @@ import org.jdom2.xpath.XPathFactory;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import thredds.TestWithLocalServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thredds.TestOnLocalServer;
 import thredds.util.ContentType;
 import ucar.nc2.constants.CDM;
 import ucar.unidata.util.test.category.NeedsCdmUnitTest;
@@ -52,20 +54,22 @@ import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 @Category(NeedsCdmUnitTest.class)
 public class TestWmsServer {
+ private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final Namespace NS_WMS = Namespace.getNamespace("wms", "http://www.opengis.net/wms");
 
    @Ignore("NO WMS Server yet")
    @Test
    public void testCapabilites() throws IOException, JDOMException {
-    String endpoint = TestWithLocalServer.withPath("/wms/scanCdmUnitTests/conventions/coards/sst.mnmean.nc?service=WMS&version=1.3.0&request=GetCapabilities");
-    byte[] result = TestWithLocalServer.getContent(endpoint, 200, ContentType.xml);
+    String endpoint = TestOnLocalServer.withHttpPath("/wms/scanCdmUnitTests/conventions/coards/sst.mnmean.nc?service=WMS&version=1.3.0&request=GetCapabilities");
+    byte[] result = TestOnLocalServer.getContent(endpoint, 200, ContentType.xml);
     Reader in = new StringReader( new String(result, CDM.utf8Charset));
      SAXBuilder sb = new SAXBuilder();
      Document doc = sb.build(in);

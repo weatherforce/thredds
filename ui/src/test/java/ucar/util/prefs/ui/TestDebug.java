@@ -33,28 +33,34 @@
  */
 package ucar.util.prefs.ui;
 
-import junit.framework.*;
-import ucar.util.prefs.*;
+import org.junit.*;
+import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.util.prefs.PreferencesExt;
 import ucar.util.prefs.XMLStore;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
-public class TestDebug extends TestCase {
-  static {
-      System.setProperty("java.util.prefs.PreferencesFactory", "ucar.util.prefs.PreferencesExtFactory");
-  }
+public class TestDebug {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
+
   private static PreferencesExt store;
   private static XMLStore xstore;
 
-  public TestDebug( String name) {
-    super(name);
-    try {
-      xstore = XMLStore.createFromFile(TestAllPrefs.dir+"testDebug.xml", null);
-      store = xstore.getPreferences();
-    } catch (java.io.IOException e) {}
+  @Before
+  public void setup() throws IOException {
+    System.setProperty("java.util.prefs.PreferencesFactory", "ucar.util.prefs.PreferencesExtFactory");
+
+    xstore = XMLStore.createFromFile(tempFolder.newFile().getAbsolutePath(), null);
+    store = xstore.getPreferences();
     //store = new PreferencesExt(null,"");
     Debug.setStore( store.node("Debug"));
   }
 
+  @Test
   public void testDebug() {
     Debug.set("testit", true);
     assert( Debug.isSet("testit"));
@@ -76,6 +82,7 @@ public class TestDebug extends TestCase {
     }
   }
 
+  @Test
   public void testMenu() {
     Debug.constructMenu( new javax.swing.JMenu());
     try {
@@ -84,11 +91,4 @@ public class TestDebug extends TestCase {
       assert(false);
     }
   }
-
 }
-/* Change History:
-   $Log: TestDebug.java,v $
-   Revision 1.1.1.1  2002/12/20 16:40:27  john
-   start new cvs root: prefs
-
-*/

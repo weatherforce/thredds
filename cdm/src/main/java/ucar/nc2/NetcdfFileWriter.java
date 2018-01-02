@@ -579,7 +579,8 @@ public class NetcdfFileWriter implements Closeable {
     if (!defineMode)
       throw new UnsupportedOperationException("not in define mode");
 
-    DataType writeType =  version.isExtendedModel() ? dataType : dataType.withSign(false); // use signed type for netcdf3
+    DataType writeType =  version.isExtendedModel() ?
+            dataType : dataType.withSignedness(DataType.Signedness.SIGNED); // use signed type for netcdf3
     boolean usingSignForUnsign = writeType != dataType;
     if (!isValidDataType(writeType))
       throw new IllegalArgumentException("illegal dataType: " + dataType + " not supported in netcdf-3");
@@ -974,7 +975,7 @@ public class NetcdfFileWriter implements Closeable {
         fileWriter2.copyAll(oldVar, v);
       } else if (varRenameMap.containsKey(oldVarName)) {
         // var name has changed in ncfile - use the varRenameMap to find
-        //  the correct variable name to requst from oldFile
+        //  the correct variable name to request from oldFile
         String realOldVarName = varRenameMap.get(oldVarName);
         oldVar = oldFile.findVariable(realOldVarName);
         if (oldVar != null) {

@@ -37,7 +37,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import thredds.TestWithLocalServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thredds.TestOnLocalServer;
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
 import ucar.nc2.constants.CDM;
@@ -49,6 +51,7 @@ import ucar.unidata.util.test.TestDir;
 import ucar.unidata.util.StringUtil2;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
@@ -60,6 +63,8 @@ import java.util.List;
 @RunWith(Parameterized.class)
 @Category(NeedsCdmUnitTest.class)
 public class TestDODScompareWithFiles {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   static boolean showCompare = false, showEach = false, compareData  = false;
   static String contentRoot = TestDir.cdmUnitTestDir;
 
@@ -125,7 +130,7 @@ public class TestDODScompareWithFiles {
   @Test
   public void problem() throws IOException {
     String filename = "conventions/coards/inittest24.QRIDV07200.ncml";
-    String dodsUrl = TestWithLocalServer.withPath(path + filename);
+    String dodsUrl = TestOnLocalServer.withHttpPath(path + filename);
     String localPath = contentRoot + filename;
     compareDatasets(dodsUrl, localPath);
   }
@@ -133,7 +138,7 @@ public class TestDODScompareWithFiles {
   @Test
   public void compare() throws IOException {
     filename = StringUtil2.replace(filename, '\\', "/");
-    String dodsUrl = TestWithLocalServer.withPath(path + filename);
+    String dodsUrl = TestOnLocalServer.withHttpPath(path + filename);
     String localPath = contentRoot + filename;
     compareDatasets(dodsUrl, localPath);
   }

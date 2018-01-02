@@ -32,18 +32,25 @@
  */
 package ucar.nc2.dt.grid;
 
-import junit.framework.*;
-import ucar.ma2.*;
-import ucar.nc2.*;
-import ucar.nc2.dataset.*;
+import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ucar.ma2.Array;
+import ucar.ma2.Index;
+import ucar.ma2.Range;
+import ucar.nc2.Dimension;
+import ucar.nc2.NCdumpW;
+import ucar.nc2.dataset.CoordinateAxis;
 import ucar.nc2.dt.GridCoordSystem;
 import ucar.unidata.util.test.TestDir;
 
-import java.io.*;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 /** Test grids with 1 dimensional z and/or t dimension */
 
 public class TestGeoGrid extends TestCase {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void testSubset() throws Exception {
     ucar.nc2.dt.grid.GridDataset dataset = GridDataset.open(TestDir.cdmLocalTestDataDir+"rankTest.nc");
@@ -66,7 +73,7 @@ public class TestGeoGrid extends TestCase {
     assert gcs_section.getTimeAxis().equals( gcs.getTimeAxis());
 
     Array data = grid_section.readDataSlice(-1, -1, -1, -1);
-    NCdumpW.printArray( data, "grid_section", System.out,  null);
+    logger.debug(NCdumpW.toString( data, "grid_section", null));
 
     dataset.close();
   }

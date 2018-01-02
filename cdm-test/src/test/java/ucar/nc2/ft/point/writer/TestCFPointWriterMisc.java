@@ -35,13 +35,18 @@ package ucar.nc2.ft.point.writer;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.Formatter;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Assume;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.DataType;
 import ucar.ma2.StructureData;
 import ucar.ma2.StructureMembers;
@@ -61,27 +66,29 @@ import ucar.unidata.util.test.TestDir;
  * @since 7/2/2014
  */
 public class TestCFPointWriterMisc {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  @Rule public final TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Test
   @Category(NeedsCdmUnitTest.class)
   public void testPointProblem() throws IOException {
     String filename = TestDir.cdmUnitTestDir + "ft/point/netcdf/Surface_Buoy_20090921_0000.nc";
     TestCFPointWriter.writeDataset(filename, FeatureType.POINT,
-            new CFPointWriterConfig(NetcdfFileWriter.Version.netcdf3), false);
+            new CFPointWriterConfig(NetcdfFileWriter.Version.netcdf3), false, tempFolder.newFile());
   }
 
   @Test
   public void testProfileProblem() throws IOException {
     String filename = TestDir.cdmLocalTestDataDir + "point/profileMultidimZJoin.ncml";
     TestCFPointWriter.writeDataset(filename, FeatureType.PROFILE,
-            new CFPointWriterConfig(NetcdfFileWriter.Version.netcdf3), false);
+            new CFPointWriterConfig(NetcdfFileWriter.Version.netcdf3), false, tempFolder.newFile());
   }
 
   @Test
   public void testStationProfileProblem() throws IOException {
     String filename = TestDir.cdmLocalTestDataDir + "point/stationProfileSingle.ncml";
     TestCFPointWriter.writeDataset(filename, FeatureType.STATION_PROFILE,
-            new CFPointWriterConfig(NetcdfFileWriter.Version.netcdf3), false);
+            new CFPointWriterConfig(NetcdfFileWriter.Version.netcdf3), false, tempFolder.newFile());
   }
 
   @Test
@@ -232,7 +239,6 @@ public class TestCFPointWriterMisc {
     }
   }
 
-
   FeatureDatasetPoint rewriteDataset(FeatureDatasetPoint fdpoint, String prefix, CFPointWriterConfig config) throws IOException {
     String location = fdpoint.getLocation();
     if (location.startsWith("file:")) location = location.substring(5);
@@ -243,7 +249,7 @@ public class TestCFPointWriterMisc {
     String name = location.substring(pos + 1);
     //String prefix = (config.version == NetcdfFileWriter.Version.netcdf3) ? ".nc" : (config.version == NetcdfFileWriter.Version.netcdf4) ? ".nc4" : ".nc4c";
     if (!name.endsWith(prefix)) name = name + prefix;
-    File fileOut = TestDir.getTempFile();
+    File fileOut = tempFolder.newFile();
 
     //String absIn = fileIn.getAbsolutePath();
     //absIn = StringUtil2.replace(absIn, "\\", "/");
@@ -269,5 +275,4 @@ public class TestCFPointWriterMisc {
 
     return (FeatureDatasetPoint) result;
   }
-
 }

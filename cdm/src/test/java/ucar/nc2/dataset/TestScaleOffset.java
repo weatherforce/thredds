@@ -35,19 +35,23 @@ package ucar.nc2.dataset;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ucar.ma2.*;
 import ucar.nc2.*;
 import ucar.nc2.constants.CDM;
-import ucar.ma2.*;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 public class TestScaleOffset {
-  @Rule
-  public TemporaryFolder tempFolder = new TemporaryFolder();
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Test
   public void testWrite() throws Exception {
-    String filename = tempFolder.newFile("scaleOffset.nc").getAbsolutePath();
+    String filename = tempFolder.newFile().getAbsolutePath();
     ArrayDouble unpacked;
     MAMath.ScaleOffset so;
     Array packed;
@@ -142,11 +146,11 @@ public class TestScaleOffset {
 
       Section s            = new Section().appendRange(1, 1).appendRange(1, 1);
       Array   readEnhanced = vs.read(s);
-      NCdumpW.printArray(readEnhanced);
+      logger.debug(NCdumpW.toString(readEnhanced));
 
       Variable sec         = vs.section(s);
       Array    readSection = sec.read();
-      NCdumpW.printArray(readSection);
+      logger.debug(NCdumpW.toString(readSection));
 
       ucar.unidata.util.test.CompareNetcdf.compareData(readEnhanced, readSection);
     }

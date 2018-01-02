@@ -1,6 +1,8 @@
 package ucar.nc2.jni.netcdf
 
 import org.junit.Assume
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import spock.lang.Specification
 import ucar.nc2.Attribute
 
@@ -11,6 +13,8 @@ import ucar.nc2.Attribute
  * @since 2016-12-27
  */
 class Nc4IospSpec extends Specification {
+    private static final Logger logger = LoggerFactory.getLogger(Nc4IospSpec)
+    
     def setup() {
         // Ignore this class's tests if NetCDF-4 isn't present.
         // We're using setup() because it shows these tests as being ignored.

@@ -3,10 +3,14 @@ package ucar.nc2.ft.coverage;
 
 import com.google.common.collect.Lists;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFileWriter;
 import ucar.nc2.constants.FeatureType;
@@ -20,6 +24,7 @@ import ucar.unidata.util.test.TestDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +37,7 @@ import java.util.List;
 @RunWith(Parameterized.class)
 @Category(NeedsCdmUnitTest.class)
 public class TestCoverageFileWriterP {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Parameterized.Parameters(name = "{0}")
   public static List<Object[]> getTestParameters() {
@@ -67,10 +73,12 @@ public class TestCoverageFileWriterP {
     this.params = (params != null) ? params : new SubsetParams();
   }
 
+  @Rule public final TemporaryFolder tempFolder = new TemporaryFolder();
+
   @Test
   public void writeTestFile() throws IOException, InvalidRangeException {
     System.out.printf("Test Dataset %s type %s%n", endpoint, type);
-    File tempFile = TestDir.getTempFile();
+    File tempFile = tempFolder.newFile();
     System.out.printf(" write to %s%n", tempFile.getAbsolutePath());
 
     // write the file

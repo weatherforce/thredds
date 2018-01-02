@@ -1,5 +1,7 @@
 package ucar.nc2.iosp.netcdf3
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import spock.lang.Specification
 
 /**
@@ -7,6 +9,8 @@ import spock.lang.Specification
  * @since 2015/09/16
  */
 class N3iospSpec extends Specification {
+    private static final Logger logger = LoggerFactory.getLogger(N3iospSpec)
+    
     def "test invalid NetCDF object names: null or empty"() {
         expect: "null names are invalid"
         !N3iosp.isValidNetcdfObjectName(null)

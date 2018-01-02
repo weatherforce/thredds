@@ -41,11 +41,15 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import thredds.TestWithLocalServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thredds.TestOnLocalServer;
 import thredds.util.ContentType;
 import ucar.httpservices.HTTPFactory;
 import ucar.httpservices.HTTPMethod;
@@ -61,9 +65,12 @@ import ucar.nc2.time.CalendarDate;
 import ucar.nc2.util.IO;
 import ucar.nc2.util.Misc;
 import ucar.unidata.util.test.category.NeedsCdmUnitTest;
-import ucar.unidata.util.test.TestDir;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
@@ -79,6 +86,10 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(Parameterized.class)
 @Category(NeedsCdmUnitTest.class)
 public class TestGridAsPointP {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Rule public final TemporaryFolder tempFolder = new TemporaryFolder();
+
   static String ds1 = "ncss/grid/gribCollection/GFS_CONUS_80km/GFS_CONUS_80km_20120227_0000.grib1";
   static String varName1 = "Vertical_velocity_pressure_isobaric";
   static String query1 = "&latitude=37.86&longitude=-122.2&vertCoord=850"; // this particular variable has only 500, 700, 850 after forecast 120
@@ -111,16 +122,16 @@ public class TestGridAsPointP {
 
   @Test
   public void checkGridAsPointCsv() throws JDOMException, IOException {
-    String endpoint = TestWithLocalServer.withPath(ds + "?var=" + varName + query + "&accept=csv");
-    byte[] result = TestWithLocalServer.getContent(endpoint, 200, ContentType.csv);
+    String endpoint = TestOnLocalServer.withHttpPath(ds + "?var=" + varName + query + "&accept=csv");
+    byte[] result = TestOnLocalServer.getContent(endpoint, 200, ContentType.csv);
     Assert.assertNotNull(result);
     System.out.printf("CSV%n%s%n", new String( result, CDM.utf8Charset));
   }
 
   @Test
   public void checkGridAsPointXml() throws JDOMException, IOException {
-    String endpoint = TestWithLocalServer.withPath(ds + "?var=" + varName + query + "&accept=xml");
-    byte[] result = TestWithLocalServer.getContent(endpoint, 200, ContentType.xml);
+    String endpoint = TestOnLocalServer.withHttpPath(ds + "?var=" + varName + query + "&accept=xml");
+    byte[] result = TestOnLocalServer.getContent(endpoint, 200, ContentType.xml);
     Assert.assertNotNull(result);
     String xml = new String( result);
 
@@ -151,8 +162,8 @@ public class TestGridAsPointP {
 
   @Test
   public void writeGridAsPointNetcdf() throws JDOMException, IOException {
-    String endpoint = TestWithLocalServer.withPath(ds+"?var="+varName+query+"&accept=netcdf");
-    File tempFile = TestDir.getTempFile();
+    String endpoint = TestOnLocalServer.withHttpPath(ds+"?var="+varName+query+"&accept=netcdf");
+    File tempFile = tempFolder.newFile();
     System.out.printf(" write %sto %n  %s%n", endpoint, tempFile.getAbsolutePath());
 
     try (HTTPSession session = HTTPFactory.newSession(endpoint)) {
@@ -178,8 +189,8 @@ public class TestGridAsPointP {
 
   @Test
   public void checkGridAsPointNetcdf() throws JDOMException, IOException {
-    String endpoint = TestWithLocalServer.withPath(ds+"?var="+varName+query+"&accept=netcdf");
-    byte[] content = TestWithLocalServer.getContent(endpoint, 200, ContentType.netcdf);
+    String endpoint = TestOnLocalServer.withHttpPath(ds+"?var="+varName+query+"&accept=netcdf");
+    byte[] content = TestOnLocalServer.getContent(endpoint, 200, ContentType.netcdf);
     Assert.assertNotNull(content);
     System.out.printf("return size = %s%n", content.length);
 
@@ -193,6 +204,4 @@ public class TestGridAsPointP {
       assertNotNull(varName, v);
     }
   }
-
-
 }

@@ -1,7 +1,11 @@
 package ucar.nc2.iosp.netcdf3;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.Array;
 import ucar.ma2.ArrayChar;
 import ucar.ma2.DataType;
@@ -13,6 +17,7 @@ import ucar.unidata.util.test.TestFileDirUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 import static org.junit.Assert.*;
 
@@ -23,7 +28,9 @@ import static org.junit.Assert.*;
  * @since 4.1
  */
 public class BytePaddingTest {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @Rule public final TemporaryFolder tempFolder = new TemporaryFolder();
   public static String testDir = TestDir.cdmUnitTestDir + "formats/netcdf3/";
 
   @Test
@@ -82,12 +89,8 @@ public class BytePaddingTest {
   @Test
   public void checkPaddingOnWriteReadOneDimByteArrayOnlyRecordVar()
           throws IOException, InvalidRangeException {
-    File tmpDataRootDir = new File(TestDir.temporaryLocalDataDir);
-    File tmpDataDir = TestFileDirUtils.createTempDirectory("BytePaddingTest_checkPaddingOnWriteReadOneDimByteArrayOnlyRecordVar", tmpDataRootDir);
+    File tmpDataDir = tempFolder.newFolder();
     File testFile = new File(tmpDataDir, "file.nc");
-    if (testFile.exists()) {
-      testFile.delete();
-    }
 
     try( NetcdfFileWriter ncfWriteable = NetcdfFileWriter.createNew(testFile.getPath(), true)) {
       Dimension recDim = ncfWriteable.addUnlimitedDimension("v");
@@ -123,12 +126,8 @@ public class BytePaddingTest {
   @Test
   public void checkPaddingOnWriteReadOneDimByteArrayOneOfTwoRecordVars()
           throws IOException, InvalidRangeException {
-    File tmpDataRootDir = new File(TestDir.temporaryLocalDataDir);
-    File tmpDataDir = TestFileDirUtils.createTempDirectory("BytePaddingTest_checkPaddingOnWriteReadOneDimByteArrayOneOfTwoRecordVars", tmpDataRootDir);
+    File tmpDataDir = tempFolder.newFolder();
     File testFile = new File(tmpDataDir, "file.nc");
-    if (testFile.exists()) {
-      testFile.delete();
-    }
 
     try( NetcdfFileWriter ncfWriteable = NetcdfFileWriter.createNew(testFile.getPath(), true)) {
       Dimension recDim = ncfWriteable.addUnlimitedDimension("v");
@@ -177,12 +176,8 @@ public class BytePaddingTest {
   @Test
   public void checkPaddingOnWriteReadTwoDimByteArrayOnlyRecordVar()
           throws IOException, InvalidRangeException {
-    File tmpDataRootDir = new File(TestDir.temporaryLocalDataDir);
-    File tmpDataDir = TestFileDirUtils.createTempDirectory("BytePaddingTest_checkPaddingOnWriteReadTwoDimByteArrayOnlyRecordVar", tmpDataRootDir);
+    File tmpDataDir = tempFolder.newFolder();
     File testFile = new File(tmpDataDir, "file.nc");
-    if (testFile.exists()) {
-      testFile.delete();
-    }
 
     try( NetcdfFileWriter ncfWriteable = NetcdfFileWriter.createNew(testFile.getPath(), true)) {
       Dimension recDim = ncfWriteable.addUnlimitedDimension("v");
@@ -219,12 +214,8 @@ public class BytePaddingTest {
   @Test
   public void checkPaddingOnWriteReadTwoDimByteArrayOneOfTwoRecordVars()
           throws IOException, InvalidRangeException {
-    File tmpDataRootDir = new File(TestDir.temporaryLocalDataDir);
-    File tmpDataDir = TestFileDirUtils.createTempDirectory("BytePaddingTest_checkPaddingOnWriteReadTwoDimByteArrayOneOfTwoRecordVar", tmpDataRootDir);
+    File tmpDataDir = tempFolder.newFolder();
     File testFile = new File(tmpDataDir, "file.nc");
-    if (testFile.exists()) {
-      testFile.delete();
-    }
 
     try(NetcdfFileWriter ncfWriteable = NetcdfFileWriter.createNew(testFile.getPath(), true)) {
       Dimension recDim = ncfWriteable.addUnlimitedDimension("v");
@@ -273,12 +264,8 @@ public class BytePaddingTest {
   @Test
   public void checkPaddingOnWriteReadOneDimCharArrayOnlyRecordVar()
           throws IOException, InvalidRangeException {
-    File tmpDataRootDir = new File(TestDir.temporaryLocalDataDir);
-    File tmpDataDir = TestFileDirUtils.createTempDirectory("BytePaddingTest_checkPaddingOnWriteReadOneDimCharArrayOnlyRecordVar", tmpDataRootDir);
+    File tmpDataDir = tempFolder.newFolder();
     File testFile = new File(tmpDataDir, "file.nc");
-    if (testFile.exists()) {
-      testFile.delete();
-    }
 
     try(NetcdfFileWriter ncfWriteable = NetcdfFileWriter.createNew(testFile.getPath(), true)) {
       Dimension recDim = ncfWriteable.addUnlimitedDimension("v");
@@ -314,12 +301,8 @@ public class BytePaddingTest {
   @Test
   public void checkPaddingOnWriteReadOneDimCharArrayOneOfTwoRecordVars()
           throws IOException, InvalidRangeException {
-    File tmpDataRootDir = new File(TestDir.temporaryLocalDataDir);
-    File tmpDataDir = TestFileDirUtils.createTempDirectory("BytePaddingTest_checkPaddingOnWriteReadOneDimCharArrayOneOfTwoRecordVar", tmpDataRootDir);
+    File tmpDataDir = tempFolder.newFolder();
     File testFile = new File(tmpDataDir, "file.nc");
-    if (testFile.exists()) {
-      testFile.delete();
-    }
 
     try(NetcdfFileWriter ncfWriteable = NetcdfFileWriter.createNew(testFile.getPath(), true)) {
       Dimension recDim = ncfWriteable.addUnlimitedDimension("v");
@@ -370,12 +353,8 @@ public class BytePaddingTest {
   @Test
   public void checkPaddingOnWriteReadOneDimShortArrayOnlyRecordVar()
           throws IOException, InvalidRangeException {
-    File tmpDataRootDir = new File(TestDir.temporaryLocalDataDir);
-    File tmpDataDir = TestFileDirUtils.createTempDirectory("BytePaddingTest_checkPaddingOnWriteReadOneDimShortArrayOnlyRecordVar", tmpDataRootDir);
+    File tmpDataDir = tempFolder.newFolder();
     File testFile = new File(tmpDataDir, "file.nc");
-    if (testFile.exists()) {
-      testFile.delete();
-    }
 
     try(NetcdfFileWriter ncfWriteable = NetcdfFileWriter.createNew(testFile.getPath(), true)) {
       Dimension recDim = ncfWriteable.addUnlimitedDimension("v");
@@ -411,12 +390,8 @@ public class BytePaddingTest {
   @Test
   public void checkPaddingOnWriteReadOneDimShortArrayOneOfTwoRecordVars()
           throws IOException, InvalidRangeException {
-    File tmpDataRootDir = new File(TestDir.temporaryLocalDataDir);
-    File tmpDataDir = TestFileDirUtils.createTempDirectory("BytePaddingTest_checkPaddingOnWriteReadOneDimShortArrayOneOfTwoRecordVar", tmpDataRootDir);
+    File tmpDataDir = tempFolder.newFolder();
     File testFile = new File(tmpDataDir, "file.nc");
-    if (testFile.exists()) {
-      testFile.delete();
-    }
 
     try(NetcdfFileWriter ncfWriteable = NetcdfFileWriter.createNew(testFile.getPath(), true)) {
       Dimension recDim = ncfWriteable.addUnlimitedDimension("v");
@@ -467,12 +442,8 @@ public class BytePaddingTest {
   @Test
   public void checkPaddingOnWriteReadOriginalByteArrayPaddingTest()
           throws IOException, InvalidRangeException {
-    File tmpDataRootDir = new File(TestDir.temporaryLocalDataDir);
-    File tmpDataDir = TestFileDirUtils.createTempDirectory("BytePaddingTest_writeReadOriginalByteArrayPaddingTest", tmpDataRootDir);
+    File tmpDataDir = tempFolder.newFolder();
     File testFile = new File(tmpDataDir, "file.nc");
-    if (testFile.exists()) {
-      testFile.delete();
-    }
 
     try(NetcdfFileWriter ncfWriteable = NetcdfFileWriter.createNew(testFile.getPath(), true)) {
       Dimension d0 = ncfWriteable.addDimension("X", 5);

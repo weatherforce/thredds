@@ -794,7 +794,7 @@ public class Nc4Iosp extends AbstractIOServiceProvider implements IOServiceProvi
       }
       data = Array.factory(DataType.STRING, new int[]{len}, (Object) econsts);
     }
-    Attribute a = new Attribute(attname,data,false);
+    Attribute a = new Attribute(attname,data);
     a.setEnumType(userType.e);
     return a;
   }
@@ -1222,7 +1222,6 @@ public class Nc4Iosp extends AbstractIOServiceProvider implements IOServiceProvi
             cdmtype = DataType.ENUM4;
             break;
         }
-        // not supported this.e.setUnsigned(isunsigned);  LOOK
         return cdmtype;
       }
       return null;
@@ -2820,6 +2819,8 @@ public class Nc4Iosp extends AbstractIOServiceProvider implements IOServiceProvi
     if (att.getShortName().equals(H5header.HDF5_DIMENSION_LABELS)) return;
     if (att.getShortName().equals(CDM.CHUNK_SIZES)) return;
     if (att.getShortName().equals(CDM.COMPRESS)) return;
+    if (att.getShortName().equals(CDM.NCPROPERTIES)) return;
+    if (att.getShortName().equals(CDM.ISNETCDF4)) return;
 
     int ret = 0;
     Array values = att.getValues();

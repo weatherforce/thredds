@@ -32,37 +32,23 @@
  */
 package ucar.nc2.iosp.hdf5;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.*;
 import ucar.nc2.*;
 import ucar.nc2.dataset.NetcdfDataset;
 import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 
-import java.io.*;
+import java.lang.invoke.MethodHandles;
 
 /**
  * Test nc2 read JUnit framework.
  */
 @Category(NeedsCdmUnitTest.class)
 public class TestH5ReadStructure2 {
-  File tempFile;
-  PrintWriter out;
-
-  @Before
-  public void setUp() throws Exception {
-    tempFile = File.createTempFile("TestLongOffset", "out");
-    out = new PrintWriter(new FileOutputStream(tempFile));
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    out.close();
-    if (!tempFile.delete())
-      System.out.printf("Delete failed on %s%n", tempFile);
-  }
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /*
      Structure {
@@ -114,7 +100,7 @@ public class TestH5ReadStructure2 {
 
         for (StructureMembers.Member m : sd.getMembers()) {
           Array data = sd.getArray(m);
-          NCdumpW.printArray(data, m.getName(), out, null);
+          logger.debug(NCdumpW.toString(data, m.getName(), null));
         }
       }
 
@@ -160,7 +146,7 @@ public class TestH5ReadStructure2 {
 
         for (StructureMembers.Member m : sd.getMembers()) {
           Array data = sd.getArray(m);
-          NCdumpW.printArray(data, m.getName(), out, null);
+          logger.debug(NCdumpW.toString(data, m.getName(), null));
         }
       }
 
@@ -208,7 +194,7 @@ public class TestH5ReadStructure2 {
 
         for (StructureMembers.Member m : sd.getMembers()) {
           Array data = sd.getArray(m);
-          NCdumpW.printArray(data, m.getName(), out, null);
+          logger.debug(NCdumpW.toString(data, m.getName(), null));
         }
       }
 

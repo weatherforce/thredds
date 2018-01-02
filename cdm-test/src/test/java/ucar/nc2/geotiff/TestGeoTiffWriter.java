@@ -34,13 +34,17 @@
 package ucar.nc2.geotiff;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 
 import org.apache.commons.io.FileUtils;
 
 import org.junit.runners.Parameterized;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.constants.FeatureType;
@@ -55,6 +59,7 @@ import ucar.unidata.util.test.TestDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
@@ -68,6 +73,9 @@ import java.util.List;
 @RunWith(Parameterized.class)
 @Category(NeedsCdmUnitTest.class)
 public class TestGeoTiffWriter {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Rule public final TemporaryFolder tempFolder = new TemporaryFolder();
   private boolean show = false;
 
   @Parameterized.Parameters(name = "{0}")
@@ -96,7 +104,7 @@ public class TestGeoTiffWriter {
   @Test
   public void testWriteCoverage() throws IOException, InvalidRangeException {
     File f = new File(filename);
-    String gridOut = TestDir.temporaryLocalDataDir + f.getName() + ".grid.tif";
+    String gridOut = tempFolder.newFile().getAbsolutePath();
     System.out.printf("geotiff read grid %s (%s) from %s write %s%n", field, type, filename, gridOut);
 
     Array dtArray;
@@ -130,7 +138,7 @@ public class TestGeoTiffWriter {
       geotiff.read();
       if (show) System.out.printf("%s%n----------------------------------------------------%n", geotiff.showInfo());
 
-      String gridOut2 = TestDir.temporaryLocalDataDir + f.getName() + ".coverage.tif";
+      String gridOut2 = tempFolder.newFile().getAbsolutePath();
       System.out.printf("geotiff2 read coverage %s write %s%n", filename, gridOut2);
 
       GeoReferencedArray covArray;
@@ -172,5 +180,4 @@ public class TestGeoTiffWriter {
       assert FileUtils.contentEquals(file1, file2);
     }
   }
-
 }

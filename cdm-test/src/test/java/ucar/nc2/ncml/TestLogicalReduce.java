@@ -2,7 +2,9 @@ package ucar.nc2.ncml;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
 
+import org.slf4j.LoggerFactory;
 import ucar.nc2.constants.FeatureType;
 import ucar.nc2.ft.*;
 import ucar.nc2.time.CalendarDate;
@@ -10,6 +12,7 @@ import ucar.unidata.util.test.category.NeedsExternalResource;
 import ucar.unidata.util.test.TestDir;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.Formatter;
 
 /**
@@ -22,9 +25,10 @@ import java.util.Formatter;
  * are currently broken
  */
 public class TestLogicalReduce {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Test
-  // NcML references "dods://geoport.whoi.edu/thredds/dodsC/ECOHAB_I/4151-a1h.cdf".
+  // NcML references "dods://stellwagen.er.usgs.gov/thredds/dodsC/TSdata/ECOHAB_I/4151-a1h.cdf".
   @Category(NeedsExternalResource.class)
   public void testStation() throws IOException {
     String location = TestDir.cdmLocalTestDataDir + "ncml/logicalReduce/4151-a1h.ncml";
@@ -42,7 +46,7 @@ public class TestLogicalReduce {
   }
 
   @Test
-  // NcML references "dods://geoport.whoi.edu/thredds/dodsC/WFAL/8602wh-a.nc"
+  // NcML references "dods://stellwagen.er.usgs.gov/thredds/dodsC/TSdata/WFAL/8602wh-a.nc"
   @Category(NeedsExternalResource.class)
   public void testStationProfile() throws IOException {
     String location = TestDir.cdmLocalTestDataDir + "ncml/logicalReduce/8602wh-a.ncml";
@@ -58,11 +62,11 @@ public class TestLogicalReduce {
       assert fc.getCollectionFeatureType() == FeatureType.STATION_PROFILE;
       assert (fc instanceof StationProfileFeatureCollection);
 
-      int count = checkStationProfileFeatureCollection((StationProfileFeatureCollection) fc, false);
+      int count = checkStationProfileFeatureCollection((StationProfileFeatureCollection) fc);
     }
   }
 
-  int checkStationProfileFeatureCollection(StationProfileFeatureCollection stationProfileFeatureCollection, boolean show) throws IOException {
+  int checkStationProfileFeatureCollection(StationProfileFeatureCollection stationProfileFeatureCollection) throws IOException {
     long start = System.currentTimeMillis();
     int count = 0;
     stationProfileFeatureCollection.resetIteration();
@@ -76,16 +80,14 @@ public class TestLogicalReduce {
         assert pf.getName() != null;
         assert pf.getTime() != null;
 
-        if (show)
-          System.out.printf(" ProfileFeature=%s %n", pf.getName());
+        logger.debug("ProfileFeature = {}", pf.getName());
         if (last != null) assert !last.equals(pf.getTime());
         last = pf.getTime();
         count++;
       }
     }
     long took = System.currentTimeMillis() - start;
-    if (show)
-      System.out.println(" testStationProfileFeatureCollection complete count= " + count + " full iter took= " + took + " msec");
+    logger.debug("testStationProfileFeatureCollection complete count = {}  full iter took = {} msec", count , took);
     return count;
   }
 

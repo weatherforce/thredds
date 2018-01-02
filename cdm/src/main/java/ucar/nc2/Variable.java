@@ -66,8 +66,8 @@ public class Variable extends CDMNode implements VariableIF, ProxyReader, Attrib
    */
   static public boolean permitCaching = true;
 
-  static public final int defaultSizeToCache = 4000; // bytes  cache any variable whose size() < defaultSizeToCache
-  static public final int defaultCoordsSizeToCache = 40 * 1000; // bytes cache coordinate variable whose size() < defaultSizeToCache
+  static public int defaultSizeToCache = 4000; // bytes  cache any variable whose size() < defaultSizeToCache
+  static public int defaultCoordsSizeToCache = 40 * 1000; // bytes cache coordinate variable whose size() < defaultSizeToCache
 
   static protected boolean debugCaching = false;
   static private org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(Variable.class);
@@ -235,31 +235,6 @@ public class Variable extends CDMNode implements VariableIF, ProxyReader, Attrib
   public boolean isVariableLength() {
     return isVariableLength;
   }
-
-  /*
-   * Is this Variable unsigned?. Only meaningful for byte, short, int, long types.
-   * Looks for attribute "_Unsigned", case insensitive
-   *
-   * @return true if Variable is unsigned
-   *
-  public boolean isUnsigned() {
-    Attribute att = findAttributeIgnoreCase(CDM.UNSIGNED);
-    return (att != null) && att.getStringValue().equalsIgnoreCase("true");
-  }
-
-  /*
-   * Say if this Variable is unsigned.
-   *
-   * @param b unsigned iff b is true
-   *
-  public void setUnsigned(boolean b) {
-    Attribute att = findAttributeIgnoreCase(CDM.UNSIGNED);
-    if (att == null && !b)
-      return; // ok as is
-
-    att = new Attribute(CDM.UNSIGNED, b ? "true" : "false");
-    this.addAttribute(att);
-  }  */
 
   /**
    * Can this variable's size grow?.
@@ -1039,8 +1014,8 @@ public class Variable extends CDMNode implements VariableIF, ProxyReader, Attrib
 
     indent.incr();
     for (Attribute att : getAttributes()) {
-      if(Attribute.suppress(att,strict)) continue;
-      buf.format("", indent);
+      if(Attribute.isspecial(att)) continue;
+      buf.format("%s", indent);
       att.writeCDL(buf, strict, getShortName());
       buf.format(";");
       if (!strict && (att.getDataType() != DataType.STRING))

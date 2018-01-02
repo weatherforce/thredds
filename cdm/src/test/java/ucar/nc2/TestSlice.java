@@ -36,14 +36,20 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.Array;
 import ucar.ma2.ArrayFloat;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+
 import static org.junit.Assert.assertEquals;
 
 public class TestSlice {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   private static final String DATA_VARIABLE = "data";
   private static final int DIM_T = 10;
   private static final int DIM_ALT = 5;
@@ -57,7 +63,7 @@ public class TestSlice {
 
   @Before
   public void setUp() throws IOException {
-    filePath = tempFolder.newFile("testSlice.nc").getAbsolutePath();
+    filePath = tempFolder.newFile().getAbsolutePath();
 
     try (NetcdfFileWriter file = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf3, filePath)) {
       file.addDimension(null, "t", DIM_T);

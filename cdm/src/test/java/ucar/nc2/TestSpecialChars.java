@@ -37,6 +37,8 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.jdom2.Element;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
@@ -48,6 +50,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 
 /**
@@ -55,6 +58,8 @@ import java.util.ArrayList;
  * @since Aug 7, 2007
  */
 public class TestSpecialChars {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
@@ -62,7 +67,7 @@ public class TestSpecialChars {
 
   @Test
   public void testWriteAndRead() throws IOException, InvalidRangeException {
-    String filename = tempFolder.newFile("testSpecialChars.nc").getAbsolutePath();
+    String filename = tempFolder.newFile().getAbsolutePath();
 
     try (NetcdfFileWriter ncfilew = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf3, filename)) {
       ncfilew.addGlobalAttribute("omy", trouble);
@@ -80,7 +85,7 @@ public class TestSpecialChars {
       ncfilew.writeStringData(tvar, data);
     }
 
-    String ncmlFilePath = tempFolder.newFile("testSpecialChars.ncml").getAbsolutePath();
+    String ncmlFilePath = tempFolder.newFile().getAbsolutePath();
     try (NetcdfFile ncfile = NetcdfFile.open(filename, null)) {
       String val = ncfile.findAttValueIgnoreCase(null, "omy", null);
       assert val != null;

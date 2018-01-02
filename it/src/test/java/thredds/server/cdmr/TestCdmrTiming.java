@@ -36,7 +36,9 @@ package thredds.server.cdmr;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import thredds.TestWithLocalServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thredds.TestOnLocalServer;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.ma2.Section;
@@ -47,6 +49,7 @@ import ucar.nc2.stream.CdmRemote;
 import ucar.unidata.util.test.category.NeedsRdaData;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 /**
  * Describe
@@ -56,7 +59,9 @@ import java.io.IOException;
  */
 @Category(NeedsRdaData.class)
 public class TestCdmrTiming {
-  String local = /* CdmRemote.SCHEME + */ TestWithLocalServer.server + "cdmremote/rdavmWork/yt.oper.an.sfc.regn400sc.10v_166.200805";
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  String local = TestOnLocalServer.withHttpPath("cdmremote/rdavmWork/yt.oper.an.sfc.regn400sc.10v_166.200805");
   String rdavm = "http://rdavm.ucar.edu:8080/thredds/cdmremote/files/e/ds629.1/yt.oper.an.sfc/2008/yt.oper.an.sfc.regn400sc.10v_166.200805";
   String cdmUrl = local;
 
@@ -68,9 +73,9 @@ public class TestCdmrTiming {
   }
 
   static int timeDataRead(String remote, int  stride) throws IOException, InvalidRangeException {
-    System.out.printf("--CdmRemote Read %s stride=%d ", remote, stride);
+    logger.debug("--CdmRemote Read {} stride={}", remote, stride);
 
-    try ( NetcdfFile ncremote = new CdmRemote(remote)) {
+    try (NetcdfFile ncremote = new CdmRemote(remote)) {
 
       String gridName = "10_metre_V_wind_component_surface";
       Variable vs = ncremote.findVariable(gridName);
@@ -87,7 +92,7 @@ public class TestCdmrTiming {
       Array data = vs.read(want);
 
       long took = System.currentTimeMillis() - start;
-      System.out.printf(" took=%d size=%d %n", took, data.getSize());
+      logger.debug("took={} size={}", took, data.getSize());
 
     }
     return 1;
@@ -101,7 +106,7 @@ public class TestCdmrTiming {
   }
 
   static int timeDataRead2(String remote, int  stride) throws IOException, InvalidRangeException {
-    System.out.printf("--Coverage Read %s stride=%d ", remote, stride);
+    logger.debug("--Coverage Read {} stride={} ", remote, stride);
 
     try (FeatureDatasetCoverage cc = CoverageDatasetFactory.open(remote)) {
       CoverageCollection gcs = cc.getSingleCoverageCollection();
@@ -116,10 +121,9 @@ public class TestCdmrTiming {
       GeoReferencedArray geo = grid.readData(params);
 
       long took = System.currentTimeMillis() - start;
-      System.out.printf(" took=%d size=%d %n", took, geo.getData().getSize());
+      logger.debug("took={} size={}", took, geo.getData().getSize());
 
     }
     return 1;
   }
-
 }

@@ -2,6 +2,8 @@ package ucar.nc2.jni.netcdf
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import spock.lang.Specification
 import spock.lang.Unroll
 import ucar.ma2.Array
@@ -17,6 +19,8 @@ import ucar.nc2.Variable
  * @since 2017-03-27
  */
 class Nc4IospMiscSpec extends Specification {
+    private static final Logger logger = LoggerFactory.getLogger(Nc4IospMiscSpec)
+    
     @Rule TemporaryFolder tempFolder = new TemporaryFolder()
     
     /*

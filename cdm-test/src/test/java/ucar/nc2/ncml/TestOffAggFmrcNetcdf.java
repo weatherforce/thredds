@@ -34,17 +34,21 @@ package ucar.nc2.ncml;
 
 import junit.framework.TestCase;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.*;
 import ucar.nc2.*;
 import ucar.nc2.units.DateFormatter;
 import ucar.nc2.util.Misc;
-import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 import ucar.unidata.util.test.TestDir;
+import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 @Category(NeedsCdmUnitTest.class)
 public class TestOffAggFmrcNetcdf extends TestCase {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public TestOffAggFmrcNetcdf( String name) {
     super(name);
@@ -140,7 +144,7 @@ public class TestOffAggFmrcNetcdf extends TestCase {
       assert data.getShape()[0] == nagg;
       assert data.getElementType() == double.class;
 
-      NCdumpW.printArray(data);
+      logger.debug(NCdumpW.toString(data));
 
       int count = 0;
       IndexIterator dataI = data.getIndexIterator();

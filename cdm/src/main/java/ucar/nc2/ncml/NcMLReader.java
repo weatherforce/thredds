@@ -522,8 +522,10 @@ public class NcMLReader {
 
     // detect incorrect namespace
     Namespace use = netcdfElem.getNamespace();
-    if (!use.equals(ncNS) && !use.equals(ncNSHttps)) {
-      throw new IllegalArgumentException("Incorrect namespace specified in NcML= " + use.getURI() + "\n   must be=" + ncNS.getURI());
+    if (!use.equals(ncNSHttp) && !use.equals(ncNSHttps)) {
+      String message = String.format("Namespace specified in NcML must be either '%s' or '%s', but was '%s'.",
+              ncNSHttp.getURI(), ncNSHttps.getURI(), use.getURI());
+      throw new IllegalArgumentException(message);
     }
 
     if (ncmlLocation != null) targetDS.setLocation(ncmlLocation);
@@ -602,7 +604,7 @@ public class NcMLReader {
       boolean hasValue = attElem.getAttribute("value") != null;
       if (hasValue) {  // has a new value
         try {
-          ucar.ma2.Array values = readAttributeValues(attElem);
+          ucar.ma2.Array values = readAttributeValues(attElem);  // Handles "isUnsigned".
           addAttribute(parent, new ucar.nc2.Attribute(name, values));
         } catch (RuntimeException e) {
           errlog.format("NcML existing Attribute Exception: %s att=%s in=%s%n", e.getMessage(), name, parent);
@@ -618,7 +620,7 @@ public class NcMLReader {
           boolean isUnsignedSet = unS != null && unS.equalsIgnoreCase("true");
           String typeS = attElem.getAttributeValue("type");
           DataType dtype = typeS == null ? DataType.STRING : DataType.getType(typeS);
-          if (isUnsignedSet) dtype = dtype.withSign(true);
+          if (isUnsignedSet) dtype = dtype.withSignedness(DataType.Signedness.UNSIGNED);
           addAttribute(parent, new ucar.nc2.Attribute(name, dtype));
         }
       }
@@ -659,7 +661,7 @@ public class NcMLReader {
     String unS = s.getAttributeValue("isUnsigned");
     boolean isUnsignedSet =  unS != null && unS.equalsIgnoreCase("true");
     if (isUnsignedSet && dtype.isIntegral() && !dtype.isUnsigned()) {
-      dtype = dtype.withSign(true);
+      dtype = dtype.withSignedness(DataType.Signedness.UNSIGNED);
     }
 
     String sep = s.getAttributeValue("separator");
@@ -1021,7 +1023,7 @@ public class NcMLReader {
     Attribute att = v.findAttribute(CDM.UNSIGNED);
     boolean isUnsignedSet = att != null && att.getStringValue().equalsIgnoreCase("true");
     if (isUnsignedSet) {
-      dtype = dtype.withSign(true);
+      dtype = dtype.withSignedness(DataType.Signedness.UNSIGNED);
       v.setDataType(dtype);
     }
 
@@ -1459,6 +1461,36 @@ public class NcMLReader {
         if (debugAggDetail) System.out.println(" debugAgg: nested dirLocation = " + dirLocation);
       }
 
+      // add explicit files to the agg (i.e. not from a scanned directory)
+      Map<String, String> realLocationRunTimeMap = new HashMap<>();
+      List<String> realLocationList = new ArrayList<>();
+      java.util.List<Element> ncList = aggElem.getChildren("netcdf", ncNS);
+      for (Element netcdfElemNested : ncList) {
+        String location = netcdfElemNested.getAttributeValue("location");
+        if (location == null)
+          location = netcdfElemNested.getAttributeValue("url");
+        if (location != null)
+          location = AliasTranslator.translateAlias(location);
+
+        String runTime = netcdfElemNested.getAttributeValue("coordValue");
+        if (runTime == null) {
+          Formatter f = new Formatter();
+          f.format("runtime must be explicitly defined for each netcdf element using the attribute coordValue");
+          log.error(f.toString());
+        }
+
+        String realLocation = URLnaming.resolveFile(ncmlLocation, location);
+        realLocationRunTimeMap.put(realLocation, runTime);
+        realLocationList.add(realLocation);
+
+        if ((cancelTask != null) && cancelTask.isCancel())
+          return aggc;
+        if (debugAggDetail) System.out.println(" debugAgg: nested dataset = " + location);
+      }
+
+      if (!realLocationRunTimeMap.isEmpty()) {
+        aggc.addExplicitFilesAndRunTimes(realLocationRunTimeMap);
+      }
     } else {
       throw new IllegalArgumentException("Unknown aggregation type=" + type);
     }

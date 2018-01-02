@@ -34,8 +34,12 @@
 package ucar.nc2.dt.grid;
 
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriter;
 import ucar.nc2.Variable;
@@ -50,6 +54,7 @@ import ucar.unidata.geoloc.ProjectionRect;
 import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 import ucar.unidata.util.test.TestDir;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,10 +69,13 @@ import static org.junit.Assert.assertTrue;
  */
 @Category(NeedsCdmUnitTest.class)
 public class TestCFWriter2 {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  @Rule public final TemporaryFolder tempFolder = new TemporaryFolder();
+
   @Test
   public void testSubset() throws Exception {
     String fileIn = TestDir.cdmUnitTestDir + "ft/grid/testCFwriter.nc";
-    String fileOut = TestDir.temporaryLocalDataDir + "testCFwriter.nc";
+    String fileOut = tempFolder.newFile().getAbsolutePath();
     String varName = "Temperature";
 
     try (ucar.nc2.dt.grid.GridDataset gds = GridDataset.open(fileIn)) {
@@ -215,8 +223,7 @@ public class TestCFWriter2 {
   private void testFileSize(String fileIn, String gridNames, String startDate, String endDate, ProjectionRect rect, boolean writeFile) throws Exception {
     System.out.printf("Open %s%n", fileIn);
 
-    String dir = TestDir.temporaryLocalDataDir;
-    String fileOut = dir+"/testWriteFileOnTP.nc";
+    String fileOut = tempFolder.newFile().getAbsolutePath();
     long subsetSize;
 
     List<String> gridList = new ArrayList<>();

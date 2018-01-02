@@ -35,6 +35,8 @@ package ucar.nc2.ncml;
 
 import junit.framework.TestCase;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
@@ -43,12 +45,12 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import ucar.nc2.dataset.NetcdfDataset;
 import ucar.nc2.util.Misc;
-import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 import ucar.unidata.util.test.TestDir;
+import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringReader;
+import java.lang.invoke.MethodHandles;
 
 /**
  * Test aggregation where timeUnitsChange='true'
@@ -57,6 +59,7 @@ import java.io.StringReader;
  */
 @Category(NeedsCdmUnitTest.class)
 public class TestOffAggExistingTimeUnitsChange extends TestCase {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public TestOffAggExistingTimeUnitsChange( String name) {
     super(name);
@@ -79,7 +82,8 @@ public class TestOffAggExistingTimeUnitsChange extends TestCase {
 
     int count = 0;
     Array data = v.read();
-    NCdumpW.printArray(data, "time", new PrintWriter(System.out), null);
+    logger.debug(NCdumpW.toString(data, "time", null));
+
     while (data.hasNext()) {
       assert Misc.closeEnough(data.nextInt(), (count + 1) * 3);
       count++;
@@ -113,7 +117,8 @@ public class TestOffAggExistingTimeUnitsChange extends TestCase {
 
     int count = 0;
     Array data = v.read();
-    NCdumpW.printArray(data, "time", new PrintWriter(System.out), null);
+    logger.debug(NCdumpW.toString(data, "time", null));
+
     while (data.hasNext()) {
       assert data.nextInt() == count * 3;
       count++;

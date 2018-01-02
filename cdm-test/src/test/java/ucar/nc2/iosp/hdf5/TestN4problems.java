@@ -38,6 +38,8 @@ package ucar.nc2.iosp.hdf5;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NCdumpW;
@@ -50,7 +52,7 @@ import ucar.nc2.util.DebugFlagsImpl;
 import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.lang.invoke.MethodHandles;
 
 /**
  * Miscellaneous test on HDF5
@@ -60,6 +62,7 @@ import java.io.PrintWriter;
  */
 @Category(NeedsCdmUnitTest.class)
 public class TestN4problems {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @AfterClass
   static public void after() {
@@ -101,7 +104,7 @@ public class TestN4problems {
     Variable v = ncfile.findVariable("primary_cloud");
     Array data = v.read();
     System.out.println("\n**** testReadNetcdf4 done\n\n" + ncfile);
-    NCdumpW.printArray(data, "primary_cloud", new PrintWriter(System.out), null);
+    logger.debug(NCdumpW.toString(data, "primary_cloud", null));
     ncfile.close();
     H5header.setDebugFlags( new ucar.nc2.util.DebugFlagsImpl());
   }

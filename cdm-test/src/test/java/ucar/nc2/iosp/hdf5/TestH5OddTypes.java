@@ -35,18 +35,22 @@ package ucar.nc2.iosp.hdf5;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.junit.experimental.categories.Category;
-import ucar.ma2.InvalidRangeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.Array;
+import ucar.ma2.InvalidRangeException;
 import ucar.ma2.Section;
-import ucar.nc2.*;
+import ucar.nc2.NCdumpW;
+import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
 import ucar.nc2.dataset.NetcdfDataset;
 import ucar.nc2.util.DebugFlagsImpl;
-import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 import ucar.unidata.util.test.TestDir;
+import ucar.unidata.util.test.category.NeedsCdmUnitTest;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.nio.ByteBuffer;
 
 /**
@@ -54,6 +58,7 @@ import java.nio.ByteBuffer;
  * @since Jul 17, 2007
  */
 public class TestH5OddTypes {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   static public String testDir = TestH5.testDir;
 
   @AfterClass
@@ -73,7 +78,7 @@ public class TestH5OddTypes {
       Array data = v2.read();
       assert data.getElementType() == ByteBuffer.class : data.getElementType();
       System.out.println("data size= " + new Section(data.getShape()));
-      System.out.printf("Opaque data = %s%n", NCdumpW.toString(data));
+      logger.debug("Opaque data = {}", NCdumpW.toString(data));
 
       Array odata = v2.read(new Section("1:20"));
       assert odata.getElementType() == ByteBuffer.class;
@@ -162,7 +167,7 @@ public class TestH5OddTypes {
     try (NetcdfFile ncfile = TestH5.openH5("support/cenum.h5")) {
       Variable v = ncfile.findVariable("enum");
       Array data = v.read();
-      System.out.printf("enum data = %s%n", NCdumpW.toString(data));
+      logger.debug("enum data = {}", NCdumpW.toString(data));
       System.out.println("\n**** testReadNetcdf4 done\n\n" + ncfile);
     }
     H5header.setDebugFlags(new DebugFlagsImpl(""));

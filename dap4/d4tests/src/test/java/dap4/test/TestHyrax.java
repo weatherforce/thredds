@@ -5,6 +5,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.nc2.dataset.NetcdfDataset;
 import ucar.unidata.util.test.UnitTestCommon;
 import ucar.unidata.util.test.category.NotJenkins;
@@ -12,6 +14,7 @@ import ucar.unidata.util.test.category.NotTravis;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +23,8 @@ import java.util.List;
  */
 public class TestHyrax extends DapTestCommon
 {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     static final boolean DEBUG = false;
 
     static final boolean NCDUMP = true; // Use NcDumpW instead of NCPrint
@@ -334,7 +339,7 @@ public class TestHyrax extends DapTestCommon
     {
         StringWriter sw = new StringWriter();
 
-        StringBuilder args = new StringBuilder("-strict -unsigned");
+        StringBuilder args = new StringBuilder("-strict");
         if(datasetname != null) {
             args.append(" -datasetname ");
             args.append(datasetname);
@@ -355,7 +360,7 @@ public class TestHyrax extends DapTestCommon
     {
         StringWriter sw = new StringWriter();
 
-        StringBuilder args = new StringBuilder("-strict -unsigned -vall");
+        StringBuilder args = new StringBuilder("-strict -vall");
         if(datasetname != null) {
             args.append(" -datasetname ");
             args.append(datasetname);

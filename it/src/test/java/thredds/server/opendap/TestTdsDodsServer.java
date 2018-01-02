@@ -35,12 +35,13 @@ package thredds.server.opendap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import thredds.TestWithLocalServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thredds.TestOnLocalServer;
 import thredds.client.catalog.Catalog;
 import thredds.client.catalog.Dataset;
 import thredds.client.catalog.tools.DataFactory;
 import thredds.server.catalog.TdsLocalCatalog;
-import thredds.util.ContentType;
 import ucar.ma2.Array;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
@@ -48,13 +49,9 @@ import ucar.nc2.VariableSimpleIF;
 import ucar.nc2.constants.CDM;
 import ucar.nc2.constants.FeatureType;
 import ucar.nc2.dataset.CoordinateAxis;
-import ucar.nc2.dataset.CoordinateAxis1D;
 import ucar.nc2.dataset.NetcdfDataset;
 import ucar.nc2.dt.GridCoordSystem;
-import ucar.nc2.dt.GridDataset;
-import ucar.nc2.dt.GridDatatype;
 import ucar.nc2.dt.grid.GeoGrid;
-import ucar.nc2.ft2.coverage.*;
 import ucar.nc2.util.CompareNetcdf2;
 import ucar.nc2.util.Misc;
 import ucar.unidata.util.test.category.NeedsCdmUnitTest;
@@ -62,22 +59,24 @@ import ucar.unidata.util.test.TestDir;
 import ucar.unidata.util.StringUtil2;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.Formatter;
 import java.util.List;
 
 @Category(NeedsCdmUnitTest.class)
 public class TestTdsDodsServer {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Test
   public void checkBadRequest() {
-    String endpoint = TestWithLocalServer.withPath("/dodsC/scanCdmUnitTests/tds/ncep/NAM_CONUS_20km_selectsurface_20100913_0000.grib2.badascii?Visibility_surface[0:1:0][0:1:0][0:1:0]");
-    byte[] result = TestWithLocalServer.getContent(endpoint, 400, null);
+    String endpoint = TestOnLocalServer.withHttpPath("/dodsC/scanCdmUnitTests/tds/ncep/NAM_CONUS_20km_selectsurface_20100913_0000.grib2.badascii?Visibility_surface[0:1:0][0:1:0][0:1:0]");
+    byte[] result = TestOnLocalServer.getContent(endpoint, 400, null);
   }
 
   @Test
   public void testGridArrayAscii() {
-    String endpoint = TestWithLocalServer.withPath("/dodsC/scanCdmUnitTests/tds/ncep/NAM_CONUS_20km_selectsurface_20100913_0000.grib2.ascii?Visibility_surface[0:1:0][0:1:0][0:1:0]");
-    byte[] result = TestWithLocalServer.getContent(endpoint, 200, null);
+    String endpoint = TestOnLocalServer.withHttpPath("/dodsC/scanCdmUnitTests/tds/ncep/NAM_CONUS_20km_selectsurface_20100913_0000.grib2.ascii?Visibility_surface[0:1:0][0:1:0][0:1:0]");
+    byte[] result = TestOnLocalServer.getContent(endpoint, 200, null);
     Assert.assertNotNull(result);
     String results = new String(result, CDM.utf8Charset);
     assert results.contains("scanCdmUnitTests/tds/ncep/NAM_CONUS_20km_selectsurface_20100913_0000.grib2");
@@ -86,8 +85,8 @@ public class TestTdsDodsServer {
 
   @Test
   public void testUrlReading() throws IOException {
-    doOne(TestWithLocalServer.withPath("dodsC/scanCdmUnitTests/tds/ncep/NAM_Alaska_22km_20100504_0000.grib1"));
-    doOne(TestWithLocalServer.withPath("dodsC/scanCdmUnitTests/tds/ncep/NAM_Alaska_45km_conduit_20100913_0000.grib2"));
+    doOne(TestOnLocalServer.withHttpPath("dodsC/scanCdmUnitTests/tds/ncep/NAM_Alaska_22km_20100504_0000.grib1"));
+    doOne(TestOnLocalServer.withHttpPath("dodsC/scanCdmUnitTests/tds/ncep/NAM_Alaska_45km_conduit_20100913_0000.grib2"));
   }
 
   /*
@@ -169,7 +168,7 @@ public class TestTdsDodsServer {
 
   @Test
   public void testCompareWithFile() throws IOException {
-    final String urlPrefix = TestWithLocalServer.withPath("/dodsC/scanCdmUnitTests/tds/opendap/");
+    final String urlPrefix = TestOnLocalServer.withHttpPath("/dodsC/scanCdmUnitTests/tds/opendap/");
     final String dirName = TestDir.cdmUnitTestDir + "tds/opendap/";  // read all files from this dir
 
     TestDir.actOnAll(dirName, new TestDir.FileFilterNoWant(".gbx8 .gbx9 .ncx .ncx2 .ncx3"), new TestDir.Act() {

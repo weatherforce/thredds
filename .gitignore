@@ -13,8 +13,11 @@ tds/content/
 .idea/
 atlassian-ide-plugin.xml
 
-# Ignore artifacts created when running TDS in IntelliJ
-out/
+# ignore intellij compile directories
+# `module`/out/ (i.e. tds/out)
+*/out/
+# `module`/`submodule`/out (i.e. dap4/d4core/out/)
+*/*/out/
 
 # Ignore Dreamweaver balogna
 _notes
@@ -62,3 +65,6 @@ Thumbs.db
 # Coverity files 
 cov-int
 thredds.tgz
+
+# ignore shade plugin generated dependency-reduced-pom for ncIdv
+ncIdv/dependency-reduced-pom.xml

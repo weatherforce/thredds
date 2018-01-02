@@ -8,6 +8,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thredds.TestOnLocalServer;
 import ucar.httpservices.*;
 import ucar.unidata.util.test.category.NotJenkins;
 import ucar.unidata.util.test.category.NotTravis;
@@ -15,19 +18,20 @@ import ucar.unidata.util.test.category.NotTravis;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.Random;
 
 @Category({NotJenkins.class, NotTravis.class}) // must call explicitly in intellij
 public class TestUpload extends TestReify
 {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     static protected final boolean DEBUG = false;
 
     //////////////////////////////////////////////////
     // Constants
 
-    static protected final String DEFAULTSERVER = "localhost:8081";
-    static protected final String DEFAULTUPURL = "http://" + DEFAULTSERVER + THREDDSPREFIX + UPPREFIX;
+    static protected final String DEFAULTUPURL = TestOnLocalServer.withHttpPath(UPPREFIX);
 
     //////////////////////////////////////////////////
     // Type Decls
@@ -36,7 +40,6 @@ public class TestUpload extends TestReify
 
     static class TestCase extends AbstractTestCase
     {
-        static public String server = DEFAULTSERVER;
         static String uploaddir = null;
 
         static public void setUploadDir(String dir)
@@ -90,12 +93,7 @@ public class TestUpload extends TestReify
         public String
         makeURL()
         {
-            StringBuilder b = new StringBuilder();
-            b.append("http://");
-            b.append(server);
-            b.append(THREDDSPREFIX);
-            b.append(UPPREFIX);
-            return b.toString();
+            return DEFAULTUPURL;
         }
     }
 

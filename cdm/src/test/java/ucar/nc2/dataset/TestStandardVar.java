@@ -32,7 +32,9 @@
  */
 package ucar.nc2.dataset;
 
-import junit.framework.*;
+import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.*;
 import ucar.nc2.*;
 import ucar.nc2.constants.CDM;
@@ -41,11 +43,16 @@ import ucar.nc2.util.Misc;
 import ucar.unidata.util.test.TestDir;
 
 import java.io.IOException;
-import java.util.*;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.Formatter;
 
 /** Test TestStandardVar in JUnit framework. */
 
 public class TestStandardVar extends TestCase {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   private String filename = TestDir.cdmLocalTestDataDir +"standardVar.nc";
 
   public TestStandardVar( String name) {
@@ -434,9 +441,9 @@ public class TestStandardVar extends TestCase {
     Array dataDefer =  deferVar.read();
 
     System.out.printf("Enhanced=");
-    NCdumpW.printArray(data);
+    logger.debug(NCdumpW.toString(data));
     System.out.printf("%nDeferred=");
-    NCdumpW.printArray(dataDefer);
+    logger.debug(NCdumpW.toString(dataDefer));
     System.out.printf("%nProcessed=");
 
     CompareNetcdf2 nc = new CompareNetcdf2(new Formatter(System.out), false, false, true);
@@ -447,7 +454,7 @@ public class TestStandardVar extends TestCase {
       double val = deferVar.convertScaleOffsetMissing(ii.getDoubleNext());
       ii.setDoubleCurrent(val);
     }
-    NCdumpW.printArray(dataDefer);
+    logger.debug(NCdumpW.toString(dataDefer));
 
     assert nc.compareData(enhancedVar.getShortName(), data, dataDefer, false);
 

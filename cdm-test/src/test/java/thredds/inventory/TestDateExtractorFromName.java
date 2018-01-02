@@ -3,9 +3,11 @@ package thredds.inventory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.nc2.time.CalendarDate;
-import ucar.unidata.util.test.TestDir;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,7 @@ import java.util.List;
  */
 @RunWith(Parameterized.class)
 public class TestDateExtractorFromName {
-  static String base = "thredds:resolve:http://"+ TestDir.threddsTestServer+"/thredds/";
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Parameterized.Parameters(name="{0}")
   public static List<Object[]> getTestParameters() {
@@ -53,8 +55,7 @@ public class TestDateExtractorFromName {
   public void doit() {
     DateExtractorFromName de = new DateExtractorFromName(dateFormatMark, useName);
     CalendarDate d = de.getCalendarDateFromPath(name);
-    System.out.printf("%s == %s%n", name , d);
+    logger.debug("{} == {}", name, d);
     assert d.toString().equals(result);
   }
-
 }

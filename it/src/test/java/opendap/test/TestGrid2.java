@@ -34,12 +34,16 @@ package opendap.test;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thredds.TestOnLocalServer;
 import ucar.nc2.dataset.NetcdfDataset;
 import ucar.unidata.util.test.TestDir;
 import ucar.unidata.util.test.UnitTestCommon;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.invoke.MethodHandles;
 
 /**
  * Test nc2 dods in the JUnit framework.
@@ -58,6 +62,8 @@ import java.io.StringWriter;
 
 public class TestGrid2 extends UnitTestCommon
 {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     static final protected String URLPATH = "/thredds/dodsC/scanLocal/testgrid2.nc";
 
     public TestGrid2()
@@ -117,7 +123,7 @@ public class TestGrid2 extends UnitTestCommon
         StringWriter sw = new StringWriter();
         // Print the meta-databuffer using these args to NcdumpW
         try {
-            if(!ucar.nc2.NCdumpW.print(ncfile, "-unsigned", sw, null))
+            if(!ucar.nc2.NCdumpW.print(ncfile, null, sw, null))
                 throw new Exception("NcdumpW failed");
         } catch (IOException ioe) {
             throw new Exception("NcdumpW failed", ioe);
@@ -133,7 +139,7 @@ public class TestGrid2 extends UnitTestCommon
         // Dump the databuffer
         sw = new StringWriter();
         try {
-            if(!ucar.nc2.NCdumpW.print(ncfile, "-vall -unsigned", sw, null))
+            if(!ucar.nc2.NCdumpW.print(ncfile, "-vall", sw, null))
                 throw new Exception("NCdumpW failed");
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -145,7 +151,7 @@ public class TestGrid2 extends UnitTestCommon
 
 
     static protected final String BASELINE =
-            "netcdf dods://localhost:8081/thredds/dodsC/scanLocal/testgrid2.nc {\n"
+            "netcdf " + TestOnLocalServer.withDodsPath("dodsC/scanLocal/testgrid2.nc") + " {\n"
                     + "  dimensions:\n"
                     + "    time = 2;\n"
                     + "  variables:\n"

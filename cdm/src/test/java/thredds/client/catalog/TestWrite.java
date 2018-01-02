@@ -33,30 +33,31 @@
 package thredds.client.catalog;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import thredds.client.catalog.tools.CatalogXmlWriter;
-import ucar.unidata.util.test.TestDir;
 
 import java.io.*;
-import java.util.*;
+import java.lang.invoke.MethodHandles;
+import java.util.Iterator;
+import java.util.List;
 
 public class TestWrite {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
   static boolean debugCompare = true, debugCompareList = true;
 
   @Test
   public void testWrite1() throws IOException {
     String filename = "test1.xml";
-    Catalog cat = TestClientCatalog.open(filename);
+    Catalog cat = ClientCatalogUtil.open(filename);
     assert cat != null;
 
-    // create a file and write it out
-    File tmpDir = new File(TestDir.temporaryLocalDataDir);
-    if (!tmpDir.exists()) {
-        boolean ret = tmpDir.mkdirs();
-        if (!ret) System.out.println("Error creating directory");
-    }
-
-    File tmpFile = new File(tmpDir, filename + ".tmp");
+    File tmpFile = tempFolder.newFile();
     System.out.println(" output filename= "+tmpFile.getPath());
 
     try {
@@ -70,7 +71,7 @@ public class TestWrite {
     }
 
     // read it back in
-    Catalog catR = TestClientCatalog.open("file:" + tmpFile.getPath());
+    Catalog catR = ClientCatalogUtil.open("file:" + tmpFile.getPath());
     assert catR != null;
 
     compare( cat, catR);
