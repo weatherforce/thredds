@@ -1584,6 +1584,12 @@ public class Grib2CollectionPanel extends JPanel {
     public double getAerWavel1()   { return ((Grib2Pds.PdsAerosol) pds).getAerosolWavelength1(); }
     public double getAerWavel2()  { return ((Grib2Pds.PdsAerosol) pds).getAerosolWavelength2(); }
 
+    /////////////////////////////
+    // Atmospheric chemical constituents
+    public int getAtmosphericChemicalConstituentType() {
+      return ((Grib2Pds.PdsAtmosphericChemicalConstituents) pds).getAtmosphericChemicalConstituentType();
+    }
+
   ///////////////////////////////
     // Ensembles
    public  int getPertN() {
@@ -1644,6 +1650,11 @@ public class Grib2CollectionPanel extends JPanel {
           props.add(new PropertyDescriptor("aerType", cl, "getAerType", null));
           props.add(new PropertyDescriptor("aerWavel1", cl, "getAerWavel1", null));
           props.add(new PropertyDescriptor("aerWavel2", cl, "getAerWavel2", null));
+        }
+
+        if (pds instanceof Grib2Pds.PdsAtmosphericChemicalConstituents) {
+          props.add(new PropertyDescriptor("atmosphericChemicalConstituentType", cl,
+                                           "getAtmosphericChemicalConstituentType", null));
         }
 
         if (pds instanceof Grib2Pds.PdsEnsemble) {
